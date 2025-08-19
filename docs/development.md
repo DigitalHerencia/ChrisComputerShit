@@ -24,8 +24,9 @@ npm run dev
 The app will be available on `http://localhost:3000`.
 
 ## Testing & Linting
-- `npm test` – runs tests (currently not defined; contributors should add tests when adding new features).
-- `npm run lint` – runs ESLint. Ensure it passes before committing.
+- `npm test` – runs unit tests with Vitest.
+- `npm run lint` – runs ESLint using the flat config. Ensure it passes before committing.
+- `npm run format` – formats code with Prettier.
 
 ## Proposed Gitflow
 1. Create an issue using one of the templates.

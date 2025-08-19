@@ -99,6 +99,7 @@ SHADOW_DATABASE_URL="postgresql://user:pass@host.neon.tech:5432/db_shadow?sslmod
 - npm run build - production build
 - npm run lint - lint sources
 - npm run test - unit/integration tests
+- npm run format - format code with Prettier
 
 ---
 
