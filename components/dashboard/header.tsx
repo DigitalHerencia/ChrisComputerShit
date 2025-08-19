@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 interface HeaderProps {
-  user: any
+  firstName: string | null | undefined
 }
 
-export function Header({ user }: HeaderProps) {
+export function Header({ firstName }: HeaderProps) {
   return (
     <header className="bg-card border-b border-border px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <h2 className="text-xl font-semibold text-foreground lg:block hidden">
-            Welcome back, {user?.firstName || "Jefe"}!
+            Welcome back, {firstName || "Jefe"}!
           </h2>
 
           {/* Search bar */}
