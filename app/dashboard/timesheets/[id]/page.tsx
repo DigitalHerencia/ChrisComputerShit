@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/db"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
