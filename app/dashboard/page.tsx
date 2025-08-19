@@ -1,7 +1,8 @@
-import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { RecentActivity } from '@/components/dashboard/recent-activity';
-import { ProjectOverview } from '@/components/dashboard/project-overview';
-import { QuickActions } from '@/components/dashboard/quick-actions';
+import { prisma } from '@/lib/prisma'
+import { DashboardStats } from '@/components/dashboard/dashboard-stats'
+import { RecentActivity } from '@/components/dashboard/recent-activity'
+import { ProjectOverview } from '@/components/dashboard/project-overview'
+import { QuickActions } from '@/components/dashboard/quick-actions'
 
 export default async function DashboardPage() {
 
@@ -68,7 +69,7 @@ endDate.setHours(23, 59, 59, 999);
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <ProjectOverview projects={projects} />
-          <RecentActivity logs={ [] } timeEntries={ [] } />
+          <RecentActivity logs={recentLogs} timeEntries={todayTimeEntries} />
         </div>
 
         <div className="space-y-6">
