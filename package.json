@@ -5,9 +5,11 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "eslint .",
     "start": "next start",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "vitest run",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@clerk/nextjs": "latest",
@@ -68,13 +70,23 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "@next/eslint-plugin-next": "^15.2.4",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^14.0.0",
     "postcss": "^8.5",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.7.0",
+    "vitest": "^1.6.0"
   }
 }
