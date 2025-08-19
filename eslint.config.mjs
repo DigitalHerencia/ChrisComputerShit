@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
@@ -28,16 +30,17 @@ export default tseslint.config(
         version: 'detect'
       }
     },
-    rules: {
-      ...reactPlugin.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-      'react/react-in-jsx-scope': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-empty-object-type': 'off',
-      'react/no-unescaped-entities': 'off',
-      'react/prop-types': 'off'
-    }
+  rules: {
+  ...reactPlugin.configs.recommended.rules,
+  ...reactHooks.configs.recommended.rules,
+  ...nextPlugin.configs['core-web-vitals'].rules,
+  'react/react-in-jsx-scope': 'off',
+  '@typescript-eslint/no-explicit-any': 'off',
+  '@typescript-eslint/no-unused-vars': 'off',
+  '@typescript-eslint/no-empty-object-type': 'off',
+  'react/no-unescaped-entities': 'off',
+  'react/prop-types': 'off',
+  'react/require-render-return': 'error' // Change this line
+}
   }
 );
