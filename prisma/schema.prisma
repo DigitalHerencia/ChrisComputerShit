@@ -1,0 +1,259 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  role      UserRole @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  timeEntries    TimeEntry[]
+  createdProjects Project[] @relation("ProjectCreator")
+  assignedTasks  Task[]
+  uploadedDocs   Document[]
+  dailyLogs      DailyLog[]
+
+  @@map("users")
+}
+
+model Project {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  location    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      ProjectStatus @default(ACTIVE)
+  clientId    String?
+  createdById String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  createdBy     User           @relation("ProjectCreator", fields: [createdById], references: [id])
+  client        Entity?        @relation(fields: [clientId], references: [id])
+  dailyLogs     DailyLog[]
+  timeEntries   TimeEntry[]
+  tasks         Task[]
+  documents     Document[]
+  purchaseOrders PurchaseOrder[]
+
+  @@map("projects")
+}
+
+model DailyLog {
+  id          String   @id @default(cuid())
+  projectId   String
+  date        DateTime
+  weather     String?
+  crewCount   Int?
+  workDone    String
+  notes       String?
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy User       @relation(fields: [createdById], references: [id])
+  photos    LogPhoto[]
+
+  @@map("daily_logs")
+}
+
+model LogPhoto {
+  id        String   @id @default(cuid())
+  logId     String
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  log DailyLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@map("log_photos")
+}
+
+model TimeEntry {
+  id          String    @id @default(cuid())
+  projectId   String
+  userId      String
+  date        DateTime
+  hoursWorked Float
+  overtime    Float     @default(0)
+  description String?
+  approved    Boolean   @default(false)
+  approvedBy  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@map("time_entries")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  assigneeId  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee User?   @relation(fields: [assigneeId], references: [id])
+
+  @@map("tasks")
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  projectId   String?
+  title       String
+  type        DocumentType
+  url         String
+  fileSize    Int?
+  mimeType    String?
+  uploadedById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  project    Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploadedBy User     @relation(fields: [uploadedById], references: [id])
+
+  @@map("documents")
+}
+
+model PurchaseOrder {
+  id          String    @id @default(cuid())
+  projectId   String
+  vendorId    String
+  poNumber    String    @unique
+  description String?
+  totalAmount Float
+  status      POStatus  @default(PENDING)
+  orderDate   DateTime  @default(now())
+  expectedDate DateTime?
+  receivedDate DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  vendor  Entity  @relation(fields: [vendorId], references: [id])
+  items   POItem[]
+
+  @@map("purchase_orders")
+}
+
+model POItem {
+  id          String  @id @default(cuid())
+  poId        String
+  description String
+  quantity    Float
+  unitPrice   Float
+  totalPrice  Float
+
+  // Relations
+  purchaseOrder PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+
+  @@map("po_items")
+}
+
+model Entity {
+  id          String     @id @default(cuid())
+  type        EntityType
+  name        String
+  contactName String?
+  phone       String?
+  email       String?
+  address     String?
+  notes       String?
+  schedule    String?    // For burrito trucks and other scheduled services
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  clientProjects Project[]       @relation
+  purchaseOrders PurchaseOrder[]
+
+  @@map("entities")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  EMPLOYEE
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DocumentType {
+  CONTRACT
+  PERMIT
+  INVOICE
+  RECEIPT
+  PLAN
+  PHOTO
+  OTHER
+}
+
+enum POStatus {
+  PENDING
+  ORDERED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum EntityType {
+  CLIENT
+  CONTRACTOR
+  VENDOR
+  INSPECTOR
+  BURRITO_TRUCK
+  OTHER
+}
