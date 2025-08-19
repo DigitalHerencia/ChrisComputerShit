@@ -10,7 +10,7 @@
 [![Conventional Commits](https://img.shields.io/badge/Commits-Conventional-FE5196.svg)](https://www.conventionalcommits.org/)
 [![Open in VS Code](https://img.shields.io/badge/Dev-Open%20in%20VS%20Code-007ACC?logo=visualstudiocode)](https://code.visualstudio.com/)
 
-> **FleetFusion** is a server‑first Next.js application for managing construction projects: daily logs, timesheets, tasks, documents, and more — optimized for foremen and superintendents who “don’t have time for nerd stuff.”  
+> **Chris's Computer Shit** is a server‑first Next.js application for managing construction projects: daily logs, timesheets, tasks, documents, and more — optimized for foremen and superintendents who “don’t have time for nerd stuff.”  
 > Directory layout, features, and tech choices are visible in the repo (see `app/`, `components/`, `lib/`, `prisma/`, `public/`).
 
 ---
@@ -37,11 +37,11 @@
 
 ## 📁 Project Structure
 
-- app/ # Routes, layouts, server components
-- components/ # Reusable UI & widgets
-- lib/ # Utilities, helpers, client/server instantiation
-- prisma/ # Prisma schema & migrations
-- public/ # Static assets (icons, images)
+- app/ - Routes, layouts, server components
+- components/ - Reusable UI & widgets
+- lib/ - Utilities, helpers, client/server instantiation
+- prisma/ - Prisma schema & migrations
+- public/ - Static assets (icons, images)
 
 ---
 
@@ -75,11 +75,15 @@ npm run dev
 Create .env:
 
 - Database (Neon recommended)
+```
 DATABASE_URL="postgresql://user:pass@host-pooler.neon.tech:5432/db?sslmode=require"
+```
 
 - Optional for Prisma migrate/shadow
+```
 DIRECT_URL="postgresql://user:pass@host.neon.tech:5432/db?sslmode=require"
 SHADOW_DATABASE_URL="postgresql://user:pass@host.neon.tech:5432/db_shadow?sslmode=require"
+```
 
 ---
 
