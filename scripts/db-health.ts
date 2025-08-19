@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma'
+import { prisma } from '../lib/db'
 
 async function main() {
   console.log('ping:', await prisma.$queryRaw`select 1 as ok`)

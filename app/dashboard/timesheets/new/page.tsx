@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/db"
 import { TimesheetForm } from "@/components/timesheets/timesheet-form"
 
 export default async function NewTimesheetPage({

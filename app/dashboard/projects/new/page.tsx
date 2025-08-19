@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/db"
 import { ProjectForm } from "@/components/projects/project-form"
 
 export default async function NewProjectPage() {
