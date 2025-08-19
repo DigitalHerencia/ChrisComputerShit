@@ -67,3 +67,51 @@ npx prisma migrate dev
 ```
 npm run dev
 ```
+
+---
+
+## 🔧 Configuration
+
+Create .env:
+
+- Database (Neon recommended)
+DATABASE_URL="postgresql://user:pass@host-pooler.neon.tech:5432/db?sslmode=require"
+
+- Optional for Prisma migrate/shadow
+DIRECT_URL="postgresql://user:pass@host.neon.tech:5432/db?sslmode=require"
+SHADOW_DATABASE_URL="postgresql://user:pass@host.neon.tech:5432/db_shadow?sslmode=require"
+
+---
+
+## 🗺️ Roadmap (high level)
+
+ - Role‑aware dashboards (Super / PM / Accounting)
+ - Offline‑friendly time & log capture
+ - Photo scanning + PDF export for tickets/receipts
+ - CSV/Excel export for payroll & PO logs
+ - Notifications & scheduled digests
+
+---
+
+## 🧪 Scripts
+
+- npm run dev - start dev server
+- npm run build - production build
+- npm run lint - lint sources
+- npm run test - unit/integration tests
+
+---
+
+## 🤝 Contributing
+
+PRs welcome! 
+- Use Issues/PR templates under .github and follow the repo’s development notes (see any docs in /docs or agent prompts in AGENTS.md). 
+- Fork → feature branch
+- Conventional Commit messages
+- Include before/after notes or small screenshots/GIFs where helpful
+
+---
+
+## 📄 License
+
+- MIT — see LICENSE.
