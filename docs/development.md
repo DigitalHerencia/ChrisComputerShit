@@ -4,8 +4,8 @@ This document explains how to set up the project, run it locally, and contribute
 
 ## Environment Setup
 - Node.js 18 or later
-- PostgreSQL database
-- Copy `.env.example` to `.env` and configure required variables such as `DATABASE_URL`.
+- PostgreSQL database (Neon recommended)
+- Copy `.env.example` to `.env` and configure `DATABASE_URL`, `DIRECT_URL`, and `SHADOW_DATABASE_URL`.
 
 Install dependencies:
 ```bash

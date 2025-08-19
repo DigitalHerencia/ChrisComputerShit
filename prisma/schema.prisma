@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -21,17 +22,18 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  timeEntries    TimeEntry[]
-  createdProjects Project[] @relation("ProjectCreator")
-  assignedTasks  Task[]
-  uploadedDocs   Document[]
-  dailyLogs      DailyLog[]
+  timeEntries         TimeEntry[]
+  approvedTimeEntries TimeEntry[] @relation("TimeEntryApprovedBy")
+  createdProjects     Project[]   @relation("ProjectCreator")
+  assignedTasks       Task[]
+  uploadedDocs        Document[]
+  dailyLogs           DailyLog[]
 
   @@map("users")
 }
 
 model Project {
-  id          String      @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
   location    String?
@@ -40,18 +42,20 @@ model Project {
   status      ProjectStatus @default(ACTIVE)
   clientId    String?
   createdById String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Relations
-  createdBy     User           @relation("ProjectCreator", fields: [createdById], references: [id])
-  client        Entity?        @relation(fields: [clientId], references: [id])
-  dailyLogs     DailyLog[]
-  timeEntries   TimeEntry[]
-  tasks         Task[]
-  documents     Document[]
+  createdBy      User            @relation("ProjectCreator", fields: [createdById], references: [id])
+  client         Entity?         @relation(fields: [clientId], references: [id])
+  dailyLogs      DailyLog[]
+  timeEntries    TimeEntry[]
+  tasks          Task[]
+  documents      Document[]
   purchaseOrders PurchaseOrder[]
 
+  @@index([clientId])
+  @@index([createdById])
   @@map("projects")
 }
 
@@ -72,6 +76,8 @@ model DailyLog {
   createdBy User       @relation(fields: [createdById], references: [id])
   photos    LogPhoto[]
 
+  @@index([projectId])
+  @@index([createdById])
   @@map("daily_logs")
 }
 
@@ -85,26 +91,31 @@ model LogPhoto {
   // Relations
   log DailyLog @relation(fields: [logId], references: [id], onDelete: Cascade)
 
+  @@index([logId])
   @@map("log_photos")
 }
 
 model TimeEntry {
-  id          String    @id @default(cuid())
-  projectId   String
-  userId      String
-  date        DateTime
-  hoursWorked Float
-  overtime    Float     @default(0)
-  description String?
-  approved    Boolean   @default(false)
-  approvedBy  String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String   @id @default(cuid())
+  projectId    String
+  userId       String
+  date         DateTime
+  hoursWorked  Float
+  overtime     Float    @default(0)
+  description  String?
+  approved     Boolean  @default(false)
+  approvedById String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id])
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user       User    @relation(fields: [userId], references: [id])
+  approvedBy User?   @relation("TimeEntryApprovedBy", fields: [approvedById], references: [id])
 
+  @@index([projectId])
+  @@index([userId])
+  @@index([approvedById])
   @@map("time_entries")
 }
 
@@ -124,52 +135,58 @@ model Task {
   project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   assignee User?   @relation(fields: [assigneeId], references: [id])
 
+  @@index([projectId])
+  @@index([assigneeId])
   @@map("tasks")
 }
 
 model Document {
-  id          String       @id @default(cuid())
-  projectId   String?
-  title       String
-  type        DocumentType
-  url         String
-  fileSize    Int?
-  mimeType    String?
+  id           String       @id @default(cuid())
+  projectId    String?
+  title        String
+  type         DocumentType
+  url          String
+  fileSize     Int?
+  mimeType     String?
   uploadedById String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   // Relations
   project    Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   uploadedBy User     @relation(fields: [uploadedById], references: [id])
 
+  @@index([projectId])
+  @@index([uploadedById])
   @@map("documents")
 }
 
 model PurchaseOrder {
-  id          String    @id @default(cuid())
-  projectId   String
-  vendorId    String
-  poNumber    String    @unique
-  description String?
-  totalAmount Float
-  status      POStatus  @default(PENDING)
-  orderDate   DateTime  @default(now())
+  id           String    @id @default(cuid())
+  projectId    String
+  vendorId     String
+  poNumber     String    @unique
+  description  String?
+  totalAmount  Float
+  status       POStatus  @default(PENDING)
+  orderDate    DateTime  @default(now())
   expectedDate DateTime?
   receivedDate DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  vendor  Entity  @relation(fields: [vendorId], references: [id])
+  project Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  vendor  Entity   @relation(fields: [vendorId], references: [id])
   items   POItem[]
 
+  @@index([projectId])
+  @@index([vendorId])
   @@map("purchase_orders")
 }
 
 model POItem {
-  id          String  @id @default(cuid())
+  id          String @id @default(cuid())
   poId        String
   description String
   quantity    Float
@@ -179,6 +196,7 @@ model POItem {
   // Relations
   purchaseOrder PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
 
+  @@index([poId])
   @@map("po_items")
 }
 
@@ -191,7 +209,7 @@ model Entity {
   email       String?
   address     String?
   notes       String?
-  schedule    String?    // For burrito trucks and other scheduled services
+  schedule    String? // For burrito trucks and other scheduled services
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
