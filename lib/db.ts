@@ -2,7 +2,15 @@ import { PrismaClient } from '@prisma/client'
 import { Pool } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
+const getDatabaseUrl = (): string => {
+  const url = process.env.DATABASE_URL
+  if (typeof url !== 'string' || url.length === 0) {
+    throw new Error('DATABASE_URL environment variable must be a non-empty string')
+  }
+  return url
+}
+
+const pool = new Pool({ connectionString: getDatabaseUrl() })
 const adapter = new PrismaNeon(pool)
 
 declare global {

@@ -2,7 +2,7 @@
 
 The following suggestions emerged from the repository audit:
 
-1. **Centralized Prisma Client** – The dashboard page uses `prisma` without an import. Create a `lib/db.ts` that exports a singleton Prisma client and import it where needed.
+1. ~~**Centralized Prisma Client** – The dashboard page uses `prisma` without an import. Create a `lib/db.ts` that exports a singleton Prisma client and import it where needed.~~ Implemented via `lib/db.ts` and updated imports across the app.
 2. **Feature Modules** – Move business logic and data fetching out of React components into dedicated modules under `features/{domain}` to keep UI components pure.
 3. **Error Handling & Loading States** – Implement proper error boundaries and loading indicators for async operations.
 4. **Testing Strategy** – Introduce unit and integration tests and define an `npm test` script. Consider using Jest or Vitest.

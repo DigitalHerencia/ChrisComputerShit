@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/db'
 import { DashboardStats } from '@/components/dashboard/dashboard-stats'
 import { RecentActivity } from '@/components/dashboard/recent-activity'
 import { ProjectOverview } from '@/components/dashboard/project-overview'
