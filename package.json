@@ -6,12 +6,14 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "latest",
+    "@prisma/adapter-neon": "latest",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -52,6 +54,7 @@
     "next": "15.2.4",
     "next-themes": "^0.4.6",
     "prisma": "latest",
+    "@neondatabase/serverless": "latest",
     "react": "^19",
     "react-day-picker": "9.8.0",
     "react-dom": "^19",

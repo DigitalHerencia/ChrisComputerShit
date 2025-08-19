@@ -21,7 +21,7 @@ FleetFusion is a Next.js 15 application for managing construction projects, time
    npm install
    ```
 2. **Set environment variables**
-   - Create a `.env` file based on `.env.example` and set `DATABASE_URL`.
+   - Create a `.env` file based on `.env.example` and set `DATABASE_URL`, `DIRECT_URL`, and `SHADOW_DATABASE_URL`.
 3. **Run database migrations**
    ```bash
    npx prisma migrate dev

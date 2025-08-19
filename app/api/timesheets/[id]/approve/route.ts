@@ -22,7 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       where: { id: params.id },
       data: {
         approved: true,
-        approvedBy: dbUser.id,
+        approvedById: dbUser.id,
       },
       include: {
         project: { select: { name: true } },
