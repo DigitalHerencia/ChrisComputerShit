@@ -1,15 +1,12 @@
-import { prisma } from '@/lib/db'
 import { TaskCard } from '@/components/tasks/task-card'
+import { getTasks } from '@/lib/fetchers/tasks'
 
 interface TaskListProps {
-  projectId: string
+  projectId?: string
 }
 
-export async function TaskList({ projectId }: TaskListProps) {
-  const tasks = await prisma.task.findMany({
-    where: { projectId },
-    orderBy: { createdAt: 'desc' },
-  })
+export async function TaskList({ projectId }: TaskListProps = {}) {
+  const tasks = await getTasks(projectId)
 
   return (
     <div className="space-y-4">
