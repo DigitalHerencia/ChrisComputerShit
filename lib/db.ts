@@ -17,7 +17,6 @@ if (!adapter) {
   throw new Error('PrismaNeon adapter is null')
 }
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined
 }
 

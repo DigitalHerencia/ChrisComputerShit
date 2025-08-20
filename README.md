@@ -18,7 +18,7 @@
 ## ✨ Features
 
 - **Project Management** — Overview pages, client info, project status. 
-- **Task Tracking** — Track to‑dos & inspections across jobs. 
+- **Task Tracking** — Track to‑dos & inspections across jobs. Create tasks from the dashboard and assign due dates per project.
 - **Time Tracking** — Capture worker hours and summarize for payroll. 
 - **Daily Logs** — Record onsite activity with photos.  
 - **Document Handling** — Upload & organize project files. 
