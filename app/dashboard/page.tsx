@@ -59,7 +59,7 @@ endDate.setHours(23, 59, 59, 999);
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground">Your construction empire at a glance</p>
       </header>
