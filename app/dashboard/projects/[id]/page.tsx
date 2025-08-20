@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Edit, MapPin, Calendar, Users, CheckSquare, FileText, Clock, Plus } from "lucide-react"
 import { format } from "date-fns"
+import { TaskCard } from "@/components/tasks/task-card"
 
 export default async function ProjectDetailPage({
   params,
@@ -237,15 +238,7 @@ export default async function ProjectDetailPage({
               ) : (
                 <div className="space-y-4">
                   {project.tasks.map((task) => (
-                    <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <h4 className="font-medium">{task.title}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {task.assignee && `Assigned to ${task.assignee.firstName} ${task.assignee.lastName}`}
-                        </p>
-                      </div>
-                      <Badge variant="outline">{task.status.replace("_", " ")}</Badge>
-                    </div>
+                    <TaskCard key={task.id} task={task} />
                   ))}
                 </div>
               )}
