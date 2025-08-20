@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
-import { LogNew } from '@/features/logs/log-new'
+import { ContactNew } from '@/features/contacts/contact-new'
 
 export default function Page() {
   return (
     <div className="space-y-6">
       <Suspense fallback={<div>Loading...</div>}>
-        <LogNew />
+        <ContactNew />
       </Suspense>
     </div>
   )

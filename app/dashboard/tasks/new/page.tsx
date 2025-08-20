@@ -1,17 +1,11 @@
 import { Suspense } from 'react'
-import { TaskCreate } from '@/features/tasks/task-create'
+import { TaskNew } from '@/features/tasks/task-new'
 
-interface PageProps {
-  searchParams: Promise<{ project?: string }>
-}
-
-export default async function Page({ searchParams }: PageProps) {
-  const { project } = await searchParams
+export default function Page() {
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-foreground">Add Task</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <TaskCreate projectId={project} />
+        <TaskNew />
       </Suspense>
     </div>
   )

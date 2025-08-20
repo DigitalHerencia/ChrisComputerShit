@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 interface TaskCardProps {
   task: {
     id: string
@@ -9,14 +11,20 @@ interface TaskCardProps {
 
 export function TaskCard({ task }: TaskCardProps) {
   return (
-    <div className="rounded-md shadow-md bg-black p-6 border border-gray-200">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">{task.title}</h3>
-        <span className="text-sm text-muted-foreground">{task.status.replace('_', ' ')}</span>
+    <Link href={`/dashboard/tasks/${task.id}`} className="block">
+      <div className="rounded-md shadow-md bg-black p-6 border border-gray-200">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-foreground">{task.title}</h3>
+          <span className="text-sm text-muted-foreground">
+            {task.status.replace('_', ' ')}
+          </span>
+        </div>
+        {task.dueDate && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            Due {task.dueDate.toLocaleDateString()}
+          </p>
+        )}
       </div>
-      {task.dueDate && (
-        <p className="mt-2 text-sm text-muted-foreground">Due {task.dueDate.toLocaleDateString()}</p>
-      )}
-    </div>
+    </Link>
   )
 }
