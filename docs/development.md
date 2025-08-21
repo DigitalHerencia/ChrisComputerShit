@@ -20,6 +20,11 @@ Run database migrations:
 npx prisma migrate dev
 ```
 
+Seed the database with sample data:
+```bash
+npm run db:seed
+```
+
 ## Running Locally
 ```bash
 npm run dev
