@@ -24,6 +24,7 @@ export async function createTask(_: unknown, formData: FormData) {
       dueDate: dueDate ? new Date(dueDate) : undefined,
     },
   })
+  revalidatePath('/dashboard/tasks')
   revalidatePath(`/dashboard/projects/${projectId}`)
   return { success: true }
 }
