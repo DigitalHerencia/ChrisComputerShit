@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { TaskCreate } from '@/features/tasks/task-create'
+import { Suspense } from 'react';
+import { TaskCreate } from '@/features/tasks/task-create';
 
 export default function Page() {
   return (
@@ -8,5 +8,5 @@ export default function Page() {
         <TaskCreate />
       </Suspense>
     </div>
-  )
+  );
 }

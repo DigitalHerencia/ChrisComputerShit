@@ -1,11 +1,17 @@
-import { Suspense } from 'react'
-import Link from 'next/link'
-import { TaskList } from '@/features/tasks/task-list'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Search } from 'lucide-react'
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { TaskList } from '@/features/tasks/task-list';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Plus, Search } from 'lucide-react';
 
 export default function TasksPage() {
   return (
@@ -48,5 +54,5 @@ export default function TasksPage() {
         <TaskList />
       </Suspense>
     </div>
-  )
+  );
 }

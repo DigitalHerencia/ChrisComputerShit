@@ -1,27 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Calendar, Clock } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Calendar, Clock } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 interface DailyLog {
-  id: string
-  workDone: string
-  createdAt: Date
-  project: { name: string }
-  createdBy: { firstName: string | null; lastName: string | null }
+  id: string;
+  workDone: string;
+  createdAt: Date;
+  project: { name: string };
+  createdBy: { firstName: string | null; lastName: string | null };
 }
 
 interface TimeEntry {
-  id: string
-  hoursWorked: number
-  createdAt: Date
-  user: { firstName: string | null; lastName: string | null }
-  project: { name: string }
+  id: string;
+  hoursWorked: number;
+  createdAt: Date;
+  user: { firstName: string | null; lastName: string | null };
+  project: { name: string };
 }
 
 interface RecentActivityProps {
-  logs: DailyLog[]
-  timeEntries: TimeEntry[]
+  logs: DailyLog[];
+  timeEntries: TimeEntry[];
 }
 
 export function RecentActivity({ logs, timeEntries }: RecentActivityProps) {
@@ -29,25 +29,25 @@ export function RecentActivity({ logs, timeEntries }: RecentActivityProps) {
   const activities = [
     ...logs.map((log) => ({
       id: log.id,
-      type: "log" as const,
-      title: `Log: ${log.workDone.substring(0, 50)}${log.workDone.length > 50 ? "..." : ""}`,
+      type: 'log' as const,
+      title: `Log: ${log.workDone.substring(0, 50)}${log.workDone.length > 50 ? '...' : ''}`,
       project: log.project.name,
-      user: `${log.createdBy.firstName || ""} ${log.createdBy.lastName || ""}`.trim(),
+      user: `${log.createdBy.firstName || ''} ${log.createdBy.lastName || ''}`.trim(),
       time: log.createdAt,
       icon: Calendar,
     })),
     ...timeEntries.map((entry) => ({
       id: entry.id,
-      type: "timesheet" as const,
+      type: 'timesheet' as const,
       title: `Logged ${entry.hoursWorked} hours`,
       project: entry.project.name,
-      user: `${entry.user.firstName || ""} ${entry.user.lastName || ""}`.trim(),
+      user: `${entry.user.firstName || ''} ${entry.user.lastName || ''}`.trim(),
       time: entry.createdAt,
       icon: Clock,
     })),
   ]
     .sort((a, b) => b.time.getTime() - a.time.getTime())
-    .slice(0, 8)
+    .slice(0, 8);
 
   return (
     <Card>
@@ -59,19 +59,24 @@ export function RecentActivity({ logs, timeEntries }: RecentActivityProps) {
           <div className="text-center py-8 text-muted-foreground">
             <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No recent activity</p>
-            <p className="text-sm">Activity will appear here as your team works</p>
+            <p className="text-sm">
+              Activity will appear here as your team works
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {activities.map((activity) => (
-              <div key={`${activity.type}-${activity.id}`} className="flex items-start gap-3">
+              <div
+                key={`${activity.type}-${activity.id}`}
+                className="flex items-start gap-3"
+              >
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="text-xs">
                     {activity.user
-                      .split(" ")
+                      .split(' ')
                       .map((n) => n[0])
-                      .join("")
-                      .toUpperCase() || "U"}
+                      .join('')
+                      .toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
@@ -90,5 +95,5 @@ export function RecentActivity({ logs, timeEntries }: RecentActivityProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

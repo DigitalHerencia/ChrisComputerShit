@@ -1,21 +1,21 @@
-import { prisma } from '../db'
-import { Prisma } from '@prisma/client'
+import { prisma } from '../db';
+import { Prisma } from '@prisma/client';
 
 export interface TimeEntryFilters {
-  search?: string
-  project?: string
-  user?: string
+  search?: string;
+  project?: string;
+  user?: string;
 }
 
 export async function getTimeEntries(filters: TimeEntryFilters = {}) {
-  const where: Prisma.TimeEntryWhereInput = {}
+  const where: Prisma.TimeEntryWhereInput = {};
 
   if (filters.project && filters.project !== 'all') {
-    where.projectId = filters.project
+    where.projectId = filters.project;
   }
 
   if (filters.user && filters.user !== 'all-users') {
-    where.userId = filters.user
+    where.userId = filters.user;
   }
 
   if (filters.search) {
@@ -30,7 +30,7 @@ export async function getTimeEntries(filters: TimeEntryFilters = {}) {
           ],
         },
       },
-    ]
+    ];
   }
 
   return prisma.timeEntry.findMany({
@@ -41,7 +41,7 @@ export async function getTimeEntries(filters: TimeEntryFilters = {}) {
     },
     orderBy: { date: 'desc' },
     take: 50,
-  })
+  });
 }
 
 export async function getActiveProjects() {
@@ -49,12 +49,12 @@ export async function getActiveProjects() {
     where: { status: 'ACTIVE' },
     select: { id: true, name: true },
     orderBy: { name: 'asc' },
-  })
+  });
 }
 
 export async function getUsers() {
   return prisma.user.findMany({
     select: { id: true, firstName: true, lastName: true },
     orderBy: { firstName: 'asc' },
-  })
+  });
 }

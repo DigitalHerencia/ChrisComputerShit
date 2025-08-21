@@ -1,11 +1,11 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { deleteDailyLog } from "@/lib/actions/logs"
-import { format } from "date-fns"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { deleteDailyLog } from '@/lib/actions/logs';
+import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ArrowLeft,
   Edit,
@@ -15,15 +15,15 @@ import {
   Camera,
   MapPin,
   Trash2,
-} from "lucide-react"
+} from 'lucide-react';
 
 interface LogDetailProps {
-  id: string
+  id: string;
 }
 
 export async function LogDetail({ id }: LogDetailProps) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const dailyLog = await prisma.dailyLog.findUnique({
     where: { id },
@@ -32,15 +32,15 @@ export async function LogDetail({ id }: LogDetailProps) {
       createdBy: { select: { firstName: true, lastName: true } },
       photos: true,
     },
-  })
+  });
 
   if (!dailyLog) {
-    notFound()
+    notFound();
   }
 
-  const createdByName = `${dailyLog.createdBy.firstName || ""} ${
-    dailyLog.createdBy.lastName || ""
-  }`.trim()
+  const createdByName = `${dailyLog.createdBy.firstName || ''} ${
+    dailyLog.createdBy.lastName || ''
+  }`.trim();
 
   return (
     <div className="space-y-6">
@@ -54,7 +54,7 @@ export async function LogDetail({ id }: LogDetailProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-foreground">
-              Daily Log - {format(dailyLog.date, "MMM d, yyyy")}
+              Daily Log - {format(dailyLog.date, 'MMM d, yyyy')}
             </h1>
             <p className="text-muted-foreground">{dailyLog.project.name}</p>
           </div>
@@ -119,8 +119,8 @@ export async function LogDetail({ id }: LogDetailProps) {
                   {dailyLog.photos.map((photo) => (
                     <div key={photo.id} className="space-y-2">
                       <img
-                        src={photo.url || "/placeholder.svg"}
-                        alt={photo.caption || "Daily log photo"}
+                        src={photo.url || '/placeholder.svg'}
+                        alt={photo.caption || 'Daily log photo'}
                         className="w-full h-48 object-cover rounded-lg border"
                       />
                       {photo.caption && (
@@ -149,7 +149,7 @@ export async function LogDetail({ id }: LogDetailProps) {
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
                   <p className="font-medium">
-                    {format(dailyLog.date, "EEEE, MMMM d, yyyy")}
+                    {format(dailyLog.date, 'EEEE, MMMM d, yyyy')}
                   </p>
                 </div>
               </div>
@@ -159,9 +159,7 @@ export async function LogDetail({ id }: LogDetailProps) {
                   <Cloud className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Weather</p>
-                    <p className="font-medium capitalize">
-                      {dailyLog.weather}
-                    </p>
+                    <p className="font-medium capitalize">{dailyLog.weather}</p>
                   </div>
                 </div>
               )}
@@ -171,9 +169,7 @@ export async function LogDetail({ id }: LogDetailProps) {
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Crew Size</p>
-                    <p className="font-medium">
-                      {dailyLog.crewCount} members
-                    </p>
+                    <p className="font-medium">{dailyLog.crewCount} members</p>
                   </div>
                 </div>
               )}
@@ -183,9 +179,7 @@ export async function LogDetail({ id }: LogDetailProps) {
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Location</p>
-                    <p className="font-medium">
-                      {dailyLog.project.location}
-                    </p>
+                    <p className="font-medium">{dailyLog.project.location}</p>
                   </div>
                 </div>
               )}
@@ -236,6 +230,5 @@ export async function LogDetail({ id }: LogDetailProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

@@ -1,11 +1,17 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DocumentCard } from "@/components/documents/document-card"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { DocumentCard } from '@/components/documents/document-card';
 import {
   Plus,
   Search,
@@ -14,37 +20,37 @@ import {
   HardDrive,
   Tag,
   FolderOpen,
-} from "lucide-react"
+} from 'lucide-react';
 
 interface DocumentListProps {
-  searchParams: { search?: string; type?: string; project?: string }
+  searchParams: { search?: string; type?: string; project?: string };
 }
 
 export async function DocumentList({ searchParams }: DocumentListProps) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const dbUser = await prisma.user.findUnique({
     where: { clerkId: user.id },
-  })
+  });
 
-  if (!dbUser) return null
+  if (!dbUser) return null;
 
-  const where: any = {}
+  const where: any = {};
 
   if (searchParams.search) {
     where.OR = [
-      { title: { contains: searchParams.search, mode: "insensitive" } },
-      { description: { contains: searchParams.search, mode: "insensitive" } },
-    ]
+      { title: { contains: searchParams.search, mode: 'insensitive' } },
+      { description: { contains: searchParams.search, mode: 'insensitive' } },
+    ];
   }
 
-  if (searchParams.type && searchParams.type !== "all") {
-    where.type = searchParams.type
+  if (searchParams.type && searchParams.type !== 'all') {
+    where.type = searchParams.type;
   }
 
-  if (searchParams.project && searchParams.project !== "all") {
-    where.projectId = searchParams.project
+  if (searchParams.project && searchParams.project !== 'all') {
+    where.projectId = searchParams.project;
   }
 
   const [documents, projects, stats] = await Promise.all([
@@ -54,20 +60,23 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
         project: { select: { name: true } },
         uploadedBy: { select: { firstName: true, lastName: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     }),
     prisma.project.findMany({
       select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
     }),
     prisma.document.groupBy({
-      by: ["type"],
+      by: ['type'],
       _count: { type: true },
     }),
-  ])
+  ]);
 
-  const totalDocuments = documents.length
-  const totalSize = documents.reduce((sum, doc) => sum + (doc.fileSize || 0), 0)
+  const totalDocuments = documents.length;
+  const totalSize = documents.reduce(
+    (sum, doc) => sum + (doc.fileSize || 0),
+    0
+  );
 
   return (
     <div className="space-y-6">
@@ -75,7 +84,9 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Documents</h1>
-          <p className="text-muted-foreground">Manage project documents and files</p>
+          <p className="text-muted-foreground">
+            Manage project documents and files
+          </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/documents/new">
@@ -103,7 +114,9 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
             <div className="flex items-center gap-2">
               <HardDrive className="h-5 w-5" />
               <div>
-                <div className="text-2xl font-bold">{Math.round(totalSize / 1024 / 1024)}MB</div>
+                <div className="text-2xl font-bold">
+                  {Math.round(totalSize / 1024 / 1024)}MB
+                </div>
                 <p className="text-sm text-muted-foreground">Storage Used</p>
               </div>
             </div>
@@ -154,7 +167,7 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
                 />
               </div>
             </div>
-            <Select name="type" defaultValue={searchParams.type || "all"}>
+            <Select name="type" defaultValue={searchParams.type || 'all'}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Document Type" />
               </SelectTrigger>
@@ -169,7 +182,7 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
                 <SelectItem value="OTHER">Other</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="project" defaultValue={searchParams.project || "all"}>
+            <Select name="project" defaultValue={searchParams.project || 'all'}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Project" />
               </SelectTrigger>
@@ -199,9 +212,11 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
               </div>
               <h3 className="text-lg font-medium mb-2">No documents found</h3>
               <p className="text-muted-foreground mb-4">
-                {searchParams.search || searchParams.type || searchParams.project
-                  ? "Try adjusting your filters or search terms"
-                  : "Upload your first document to get started"}
+                {searchParams.search ||
+                searchParams.type ||
+                searchParams.project
+                  ? 'Try adjusting your filters or search terms'
+                  : 'Upload your first document to get started'}
               </p>
               <Button asChild>
                 <Link href="/dashboard/documents/new">
@@ -213,10 +228,8 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       )}
     </div>
-  )
+  );
 }

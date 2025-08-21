@@ -1,24 +1,24 @@
-import { Suspense } from 'react'
-import Link from 'next/link'
-import { ContactList } from '@/features/contacts/contact-list'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { ContactList } from '@/features/contacts/contact-list';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Search, Plus } from 'lucide-react'
+} from '@/components/ui/select';
+import { Search, Plus } from 'lucide-react';
 
 interface PageProps {
-  searchParams: Promise<{ q?: string; type?: string }>
+  searchParams: Promise<{ q?: string; type?: string }>;
 }
 
 export default async function ContactsPage({ searchParams }: PageProps) {
-  const { q, type } = await searchParams
+  const { q, type } = await searchParams;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -71,5 +71,5 @@ export default async function ContactsPage({ searchParams }: PageProps) {
         <ContactList search={q} type={type === 'all' ? undefined : type} />
       </Suspense>
     </div>
-  )
+  );
 }

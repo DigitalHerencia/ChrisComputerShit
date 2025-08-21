@@ -1,16 +1,29 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Search, FolderOpen, MapPin, Calendar, Users } from "lucide-react"
-import { ProjectCard } from "@/components/projects/project-card"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Plus,
+  Search,
+  FolderOpen,
+  MapPin,
+  Calendar,
+  Users,
+} from 'lucide-react';
+import { ProjectCard } from '@/components/projects/project-card';
 
 export default async function ProjectsPage() {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const projects = await prisma.project.findMany({
     include: {
@@ -18,26 +31,28 @@ export default async function ProjectsPage() {
       createdBy: { select: { firstName: true, lastName: true } },
       _count: {
         select: {
-          tasks: { where: { status: "TODO" } },
+          tasks: { where: { status: 'TODO' } },
           dailyLogs: true,
           timeEntries: true,
           documents: true,
         },
       },
     },
-    orderBy: { updatedAt: "desc" },
-  })
+    orderBy: { updatedAt: 'desc' },
+  });
 
-  const activeProjects = projects.filter((p) => p.status === "ACTIVE")
-  const completedProjects = projects.filter((p) => p.status === "COMPLETED")
-  const onHoldProjects = projects.filter((p) => p.status === "ON_HOLD")
+  const activeProjects = projects.filter((p) => p.status === 'ACTIVE');
+  const completedProjects = projects.filter((p) => p.status === 'COMPLETED');
+  const onHoldProjects = projects.filter((p) => p.status === 'ON_HOLD');
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Projects</h1>
-          <p className="text-muted-foreground">Manage all your construction projects</p>
+          <p className="text-muted-foreground">
+            Manage all your construction projects
+          </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/projects/new">
@@ -126,7 +141,9 @@ export default async function ProjectsPage() {
             <div className="text-center">
               <FolderOpen className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
-              <p className="text-muted-foreground mb-6">Get started by creating your first construction project</p>
+              <p className="text-muted-foreground mb-6">
+                Get started by creating your first construction project
+              </p>
               <Button asChild>
                 <Link href="/dashboard/projects/new">
                   <Plus className="h-4 w-4 mr-2" />
@@ -144,5 +161,5 @@ export default async function ProjectsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

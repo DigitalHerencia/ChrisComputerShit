@@ -1,5 +1,7 @@
-# 🧰 Chris’s Computer Sh*t 🏗️  
-**A modern construction management dashboard built on Next.js 15, Prisma & Neon Postgres**
+# 🧰 Chris’s Computer Sh\*t 🏗️
+
+**A modern construction management dashboard built on Next.js 15, Prisma & Neon
+Postgres**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
@@ -10,27 +12,32 @@
 [![Conventional Commits](https://img.shields.io/badge/Commits-Conventional-FE5196.svg)](https://www.conventionalcommits.org/)
 [![Open in VS Code](https://img.shields.io/badge/Dev-Open%20in%20VS%20Code-007ACC?logo=visualstudiocode)](https://code.visualstudio.com/)
 
-> **Chris's Computer Shit** is a server‑first Next.js application for managing construction projects: daily logs, timesheets, tasks, documents, and more — optimized for foremen and superintendents who “don’t have time for nerd stuff.”  
-> Directory layout, features, and tech choices are visible in the repo (see `app/`, `components/`, `lib/`, `prisma/`, `public/`).
+> **Chris's Computer Shit** is a server‑first Next.js application for managing
+> construction projects: daily logs, timesheets, tasks, documents, and more —
+> optimized for foremen and superintendents who “don’t have time for nerd
+> stuff.”  
+> Directory layout, features, and tech choices are visible in the repo (see
+> `app/`, `components/`, `lib/`, `prisma/`, `public/`).
 
 ---
 
 ## ✨ Features
 
-- **Project Management** — Overview pages, client info, project status. 
-- **Task Tracking** — Track to‑dos & inspections across jobs. Create tasks from the dashboard and assign due dates per project.
-- **Time Tracking** — Capture worker hours and summarize for payroll. 
-- **Daily Logs** — Record onsite activity with photos.  
-- **Document Handling** — Upload & organize project files. 
+- **Project Management** — Overview pages, client info, project status.
+- **Task Tracking** — Track to‑dos & inspections across jobs. Create tasks from
+  the dashboard and assign due dates per project.
+- **Time Tracking** — Capture worker hours and summarize for payroll.
+- **Daily Logs** — Record onsite activity with photos.
+- **Document Handling** — Upload & organize project files.
 
 ---
 
 ## 🧱 Tech Stack
 
-- **Framework:** Next.js 15 (App Router, React 19)  
-- **DB & ORM:** PostgreSQL (Neon, serverless) + Prisma  
-- **UI:** Tailwind CSS 4, Radix/shadcn‑style components  
-- **Auth & Middleware:** Ready for platform auth + edge‑friendly patterns  
+- **Framework:** Next.js 15 (App Router, React 19)
+- **DB & ORM:** PostgreSQL (Neon, serverless) + Prisma
+- **UI:** Tailwind CSS 4, Radix/shadcn‑style components
+- **Auth & Middleware:** Ready for platform auth + edge‑friendly patterns
 - **Tooling:** ESLint, Prettier, Vitest/Playwright (recommended)
 
 ---
@@ -47,23 +54,27 @@
 
 ## 🚀 Quick Start
 
-1) Install deps
+1. Install deps
+
 ```
 npm install
 ```
 
-2) Environment (copy, then fill)
+2. Environment (copy, then fill)
+
 ```
-.env.example 
+.env.example
 .env
 ```
 
-3) Database: run migrations (dev)
+3. Database: run migrations (dev)
+
 ```
 npx prisma migrate dev
 ```
 
-4) Start dev server
+4. Start dev server
+
 ```
 npm run dev
 ```
@@ -75,17 +86,20 @@ npm run dev
 Create .env:
 
 - Database (Neon recommended)
+
 ```
 DATABASE_URL="postgresql://user:pass@host-pooler.neon.tech:5432/db?sslmode=require"
 ```
 
 - Optional for Prisma migrate/shadow
+
 ```
 DIRECT_URL="postgresql://user:pass@host.neon.tech:5432/db?sslmode=require"
 SHADOW_DATABASE_URL="postgresql://user:pass@host.neon.tech:5432/db_shadow?sslmode=require"
 ```
 
 - Clerk Webhook
+
 ```
 CLERK_WEBHOOK_SECRET="your_svix_signing_secret"
 ```
@@ -94,11 +108,11 @@ CLERK_WEBHOOK_SECRET="your_svix_signing_secret"
 
 ## 🗺️ Roadmap (high level)
 
- - Role‑aware dashboards (Super / PM / Accounting)
- - Offline‑friendly time & log capture
- - Photo scanning + PDF export for tickets/receipts
- - CSV/Excel export for payroll & PO logs
- - Notifications & scheduled digests
+- Role‑aware dashboards (Super / PM / Accounting)
+- Offline‑friendly time & log capture
+- Photo scanning + PDF export for tickets/receipts
+- CSV/Excel export for payroll & PO logs
+- Notifications & scheduled digests
 
 ---
 
@@ -109,14 +123,17 @@ CLERK_WEBHOOK_SECRET="your_svix_signing_secret"
 - npm run lint - lint sources
 - npm run test - unit/integration tests
 - npm run format - format code with Prettier
-- npm run bootstrap:github - generate labels, milestones, project board, and backlog issues via GitHub API
+- npm run bootstrap:github - generate labels, milestones, project board, and
+  backlog issues via GitHub API
 
 ---
 
 ## 🤝 Contributing
 
-PRs welcome! 
-- Use Issues/PR templates under .github and follow the repo’s development notes (see any docs in /docs or agent prompts in AGENTS.md). 
+PRs welcome!
+
+- Use Issues/PR templates under .github and follow the repo’s development notes
+  (see any docs in /docs or agent prompts in AGENTS.md).
 - Fork → feature branch
 - Conventional Commit messages
 - Include before/after notes or small screenshots/GIFs where helpful

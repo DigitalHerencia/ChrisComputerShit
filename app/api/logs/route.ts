@@ -1,24 +1,24 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
+import { type NextRequest, NextResponse } from 'next/server';
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await currentUser()
+    const user = await currentUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const dbUser = await prisma.user.findUnique({
       where: { clerkId: user.id },
-    })
+    });
 
     if (!dbUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const body = await request.json()
-    const { projectId, date, weather, crewCount, workDone, notes } = body
+    const body = await request.json();
+    const { projectId, date, weather, crewCount, workDone, notes } = body;
 
     const dailyLog = await prisma.dailyLog.create({
       data: {
@@ -35,11 +35,14 @@ export async function POST(request: NextRequest) {
         createdBy: { select: { firstName: true, lastName: true } },
         photos: true,
       },
-    })
+    });
 
-    return NextResponse.json(dailyLog)
+    return NextResponse.json(dailyLog);
   } catch (error) {
-    console.error("Error creating daily log:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error('Error creating daily log:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

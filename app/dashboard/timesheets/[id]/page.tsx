@@ -1,21 +1,29 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Edit, Calendar, Clock, User, CheckCircle, AlertCircle } from "lucide-react"
-import { format } from "date-fns"
-import { ApprovalButton } from "@/components/timesheets/approval-button"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  ArrowLeft,
+  Edit,
+  Calendar,
+  Clock,
+  User,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { ApprovalButton } from '@/components/timesheets/approval-button';
 
 export default async function TimesheetDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const [timeEntry, dbUser] = await Promise.all([
     prisma.timeEntry.findUnique({
@@ -28,15 +36,19 @@ export default async function TimesheetDetailPage({
     prisma.user.findUnique({
       where: { clerkId: user.id },
     }),
-  ])
+  ]);
 
   if (!timeEntry) {
-    notFound()
+    notFound();
   }
 
-  const userName = `${timeEntry.user.firstName || ""} ${timeEntry.user.lastName || ""}`.trim()
-  const totalHours = timeEntry.hoursWorked + timeEntry.overtime
-  const canApprove = dbUser && (dbUser.role === "ADMIN" || dbUser.role === "SUPERVISOR") && !timeEntry.approved
+  const userName =
+    `${timeEntry.user.firstName || ''} ${timeEntry.user.lastName || ''}`.trim();
+  const totalHours = timeEntry.hoursWorked + timeEntry.overtime;
+  const canApprove =
+    dbUser &&
+    (dbUser.role === 'ADMIN' || dbUser.role === 'SUPERVISOR') &&
+    !timeEntry.approved;
 
   return (
     <div className="space-y-6">
@@ -49,18 +61,26 @@ export default async function TimesheetDetailPage({
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Timesheet - {format(timeEntry.date, "MMM d, yyyy")}</h1>
+            <h1 className="text-3xl font-bold text-foreground">
+              Timesheet - {format(timeEntry.date, 'MMM d, yyyy')}
+            </h1>
             <p className="text-muted-foreground">{timeEntry.project.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {timeEntry.approved ? (
-            <Badge variant="default" className="bg-green-100 text-green-800 border-green-200">
+            <Badge
+              variant="default"
+              className="bg-green-100 text-green-800 border-green-200"
+            >
               <CheckCircle className="h-3 w-3 mr-1" />
               Approved
             </Badge>
           ) : (
-            <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+            <Badge
+              variant="outline"
+              className="bg-yellow-100 text-yellow-800 border-yellow-200"
+            >
               <AlertCircle className="h-3 w-3 mr-1" />
               Pending
             </Badge>
@@ -88,12 +108,18 @@ export default async function TimesheetDetailPage({
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-primary/10 rounded-lg">
-                  <p className="text-3xl font-bold text-primary">{timeEntry.hoursWorked}</p>
+                  <p className="text-3xl font-bold text-primary">
+                    {timeEntry.hoursWorked}
+                  </p>
                   <p className="text-sm text-muted-foreground">Regular Hours</p>
                 </div>
                 <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                  <p className="text-3xl font-bold text-secondary">{timeEntry.overtime}</p>
-                  <p className="text-sm text-muted-foreground">Overtime Hours</p>
+                  <p className="text-3xl font-bold text-secondary">
+                    {timeEntry.overtime}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Overtime Hours
+                  </p>
                 </div>
                 <div className="text-center p-4 bg-accent/10 rounded-lg">
                   <p className="text-3xl font-bold text-accent">{totalHours}</p>
@@ -110,7 +136,9 @@ export default async function TimesheetDetailPage({
                 <CardTitle>Work Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-foreground leading-relaxed">{timeEntry.description}</p>
+                <p className="text-foreground leading-relaxed">
+                  {timeEntry.description}
+                </p>
               </CardContent>
             </Card>
           )}
@@ -123,7 +151,9 @@ export default async function TimesheetDetailPage({
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <p className="text-muted-foreground">This timesheet entry requires supervisor approval.</p>
+                  <p className="text-muted-foreground">
+                    This timesheet entry requires supervisor approval.
+                  </p>
                   <ApprovalButton entryId={timeEntry.id} />
                 </div>
               </CardContent>
@@ -143,7 +173,9 @@ export default async function TimesheetDetailPage({
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
-                  <p className="font-medium">{format(timeEntry.date, "EEEE, MMMM d, yyyy")}</p>
+                  <p className="font-medium">
+                    {format(timeEntry.date, 'EEEE, MMMM d, yyyy')}
+                  </p>
                 </div>
               </div>
 
@@ -159,7 +191,9 @@ export default async function TimesheetDetailPage({
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Status</p>
-                  <p className="font-medium">{timeEntry.approved ? "Approved" : "Pending Approval"}</p>
+                  <p className="font-medium">
+                    {timeEntry.approved ? 'Approved' : 'Pending Approval'}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -175,11 +209,20 @@ export default async function TimesheetDetailPage({
                 <div>
                   <p className="font-medium">{timeEntry.project.name}</p>
                   {timeEntry.project.location && (
-                    <p className="text-sm text-muted-foreground">{timeEntry.project.location}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {timeEntry.project.location}
+                    </p>
                   )}
                 </div>
-                <Button asChild variant="outline" size="sm" className="w-full bg-transparent">
-                  <Link href={`/dashboard/projects/${timeEntry.projectId}`}>View Project</Link>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent"
+                >
+                  <Link href={`/dashboard/projects/${timeEntry.projectId}`}>
+                    View Project
+                  </Link>
                 </Button>
               </div>
             </CardContent>
@@ -187,5 +230,5 @@ export default async function TimesheetDetailPage({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,57 +1,57 @@
-"use client"
+'use client';
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 
 interface LogFiltersProps {
-  projects: { id: string; name: string }[]
-  initialSearch?: string
-  initialProject?: string
-  initialRange?: string
+  projects: { id: string; name: string }[];
+  initialSearch?: string;
+  initialProject?: string;
+  initialRange?: string;
 }
 
 export function LogFilters({
   projects,
-  initialSearch = "",
-  initialProject = "all",
-  initialRange = "all-time",
+  initialSearch = '',
+  initialProject = 'all',
+  initialRange = 'all-time',
 }: LogFiltersProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const createQueryString = (name: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (!value || value === "all" || value === "all-time") {
-      params.delete(name)
+    const params = new URLSearchParams(searchParams.toString());
+    if (!value || value === 'all' || value === 'all-time') {
+      params.delete(name);
     } else {
-      params.set(name, value)
+      params.set(name, value);
     }
-    return params.toString()
-  }
+    return params.toString();
+  };
 
   const handleProjectChange = (value: string) => {
-    router.push(`${pathname}?${createQueryString("project", value)}`)
-  }
+    router.push(`${pathname}?${createQueryString('project', value)}`);
+  };
 
   const handleRangeChange = (value: string) => {
-    router.push(`${pathname}?${createQueryString("range", value)}`)
-  }
+    router.push(`${pathname}?${createQueryString('range', value)}`);
+  };
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const q = (formData.get("q") as string) || ""
-    router.push(`${pathname}?${createQueryString("q", q)}`)
-  }
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const q = (formData.get('q') as string) || '';
+    router.push(`${pathname}?${createQueryString('q', q)}`);
+  };
 
   return (
     <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
@@ -92,6 +92,5 @@ export function LogFilters({
         Search
       </button>
     </form>
-  )
+  );
 }
-

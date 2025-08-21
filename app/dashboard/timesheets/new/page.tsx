@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { TimesheetNew } from '@/features/timesheets/timesheet-new'
+import { Suspense } from 'react';
+import { TimesheetNew } from '@/features/timesheets/timesheet-new';
 
 export default function Page() {
   return (
@@ -8,5 +8,5 @@ export default function Page() {
         <TimesheetNew />
       </Suspense>
     </div>
-  )
+  );
 }

@@ -1,22 +1,32 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Edit, MapPin, Calendar, Users, CheckSquare, FileText, Clock, Plus } from "lucide-react"
-import { format } from "date-fns"
-import { TaskCard } from "@/components/tasks/task-card"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  ArrowLeft,
+  Edit,
+  MapPin,
+  Calendar,
+  Users,
+  CheckSquare,
+  FileText,
+  Clock,
+  Plus,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { TaskCard } from '@/components/tasks/task-card';
 
 export default async function ProjectDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const project = await prisma.project.findUnique({
     where: { id: params.id },
@@ -27,28 +37,28 @@ export default async function ProjectDetailPage({
         include: {
           assignee: { select: { firstName: true, lastName: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         take: 10,
       },
       dailyLogs: {
         include: {
           createdBy: { select: { firstName: true, lastName: true } },
         },
-        orderBy: { date: "desc" },
+        orderBy: { date: 'desc' },
         take: 10,
       },
       timeEntries: {
         include: {
           user: { select: { firstName: true, lastName: true } },
         },
-        orderBy: { date: "desc" },
+        orderBy: { date: 'desc' },
         take: 10,
       },
       documents: {
         include: {
           uploadedBy: { select: { firstName: true, lastName: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         take: 10,
       },
       _count: {
@@ -60,19 +70,19 @@ export default async function ProjectDetailPage({
         },
       },
     },
-  })
+  });
 
   if (!project) {
-    notFound()
+    notFound();
   }
 
   const statusColors = {
-    ACTIVE: "bg-green-100 text-green-800 border-green-200",
-    COMPLETED: "bg-blue-100 text-blue-800 border-blue-200",
-    ON_HOLD: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    PLANNING: "bg-purple-100 text-purple-800 border-purple-200",
-    CANCELLED: "bg-red-100 text-red-800 border-red-200",
-  }
+    ACTIVE: 'bg-green-100 text-green-800 border-green-200',
+    COMPLETED: 'bg-blue-100 text-blue-800 border-blue-200',
+    ON_HOLD: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    PLANNING: 'bg-purple-100 text-purple-800 border-purple-200',
+    CANCELLED: 'bg-red-100 text-red-800 border-red-200',
+  };
 
   return (
     <div className="space-y-6">
@@ -85,13 +95,22 @@ export default async function ProjectDetailPage({
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{project.name}</h1>
-            <p className="text-muted-foreground">Project details and management</p>
+            <h1 className="text-3xl font-bold text-foreground">
+              {project.name}
+            </h1>
+            <p className="text-muted-foreground">
+              Project details and management
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className={statusColors[project.status as keyof typeof statusColors] || ""}>
-            {project.status.replace("_", " ")}
+          <Badge
+            variant="outline"
+            className={
+              statusColors[project.status as keyof typeof statusColors] || ''
+            }
+          >
+            {project.status.replace('_', ' ')}
           </Badge>
           <Button asChild>
             <Link href={`/dashboard/projects/${project.id}/edit`}>
@@ -134,7 +153,9 @@ export default async function ProjectDetailPage({
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Start Date</p>
-                  <p className="font-medium">{format(project.startDate, "MMM d, yyyy")}</p>
+                  <p className="font-medium">
+                    {format(project.startDate, 'MMM d, yyyy')}
+                  </p>
                 </div>
               </div>
             )}
@@ -144,7 +165,9 @@ export default async function ProjectDetailPage({
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">End Date</p>
-                  <p className="font-medium">{format(project.endDate, "MMM d, yyyy")}</p>
+                  <p className="font-medium">
+                    {format(project.endDate, 'MMM d, yyyy')}
+                  </p>
                 </div>
               </div>
             )}
@@ -163,10 +186,18 @@ export default async function ProjectDetailPage({
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks ({project._count.tasks})</TabsTrigger>
-          <TabsTrigger value="logs">Logs ({project._count.dailyLogs})</TabsTrigger>
-          <TabsTrigger value="time">Time ({project._count.timeEntries})</TabsTrigger>
-          <TabsTrigger value="docs">Docs ({project._count.documents})</TabsTrigger>
+          <TabsTrigger value="tasks">
+            Tasks ({project._count.tasks})
+          </TabsTrigger>
+          <TabsTrigger value="logs">
+            Logs ({project._count.dailyLogs})
+          </TabsTrigger>
+          <TabsTrigger value="time">
+            Time ({project._count.timeEntries})
+          </TabsTrigger>
+          <TabsTrigger value="docs">
+            Docs ({project._count.documents})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -188,7 +219,9 @@ export default async function ProjectDetailPage({
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-secondary" />
                   <div>
-                    <p className="text-2xl font-bold">{project._count.dailyLogs}</p>
+                    <p className="text-2xl font-bold">
+                      {project._count.dailyLogs}
+                    </p>
                     <p className="text-sm text-muted-foreground">Daily Logs</p>
                   </div>
                 </div>
@@ -200,8 +233,12 @@ export default async function ProjectDetailPage({
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-accent" />
                   <div>
-                    <p className="text-2xl font-bold">{project._count.timeEntries}</p>
-                    <p className="text-sm text-muted-foreground">Time Entries</p>
+                    <p className="text-2xl font-bold">
+                      {project._count.timeEntries}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Time Entries
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -212,7 +249,9 @@ export default async function ProjectDetailPage({
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-muted-foreground" />
                   <div>
-                    <p className="text-2xl font-bold">{project._count.documents}</p>
+                    <p className="text-2xl font-bold">
+                      {project._count.documents}
+                    </p>
                     <p className="text-sm text-muted-foreground">Documents</p>
                   </div>
                 </div>
@@ -234,7 +273,9 @@ export default async function ProjectDetailPage({
             </CardHeader>
             <CardContent>
               {project.tasks.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No tasks yet</p>
+                <p className="text-center text-muted-foreground py-8">
+                  No tasks yet
+                </p>
               ) : (
                 <div className="space-y-4">
                   {project.tasks.map((task) => (
@@ -259,13 +300,17 @@ export default async function ProjectDetailPage({
             </CardHeader>
             <CardContent>
               {project.dailyLogs.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No logs yet</p>
+                <p className="text-center text-muted-foreground py-8">
+                  No logs yet
+                </p>
               ) : (
                 <div className="space-y-4">
                   {project.dailyLogs.map((log) => (
                     <div key={log.id} className="p-4 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{format(log.date, "MMM d, yyyy")}</h4>
+                        <h4 className="font-medium">
+                          {format(log.date, 'MMM d, yyyy')}
+                        </h4>
                         <p className="text-sm text-muted-foreground">
                           by {log.createdBy.firstName} {log.createdBy.lastName}
                         </p>
@@ -292,20 +337,31 @@ export default async function ProjectDetailPage({
             </CardHeader>
             <CardContent>
               {project.timeEntries.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No time entries yet</p>
+                <p className="text-center text-muted-foreground py-8">
+                  No time entries yet
+                </p>
               ) : (
                 <div className="space-y-4">
                   {project.timeEntries.map((entry) => (
-                    <div key={entry.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={entry.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div>
-                        <h4 className="font-medium">{format(entry.date, "MMM d, yyyy")}</h4>
+                        <h4 className="font-medium">
+                          {format(entry.date, 'MMM d, yyyy')}
+                        </h4>
                         <p className="text-sm text-muted-foreground">
                           {entry.user.firstName} {entry.user.lastName}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium">{entry.hoursWorked} hours</p>
-                        {entry.overtime > 0 && <p className="text-sm text-muted-foreground">+{entry.overtime} OT</p>}
+                        {entry.overtime > 0 && (
+                          <p className="text-sm text-muted-foreground">
+                            +{entry.overtime} OT
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -328,16 +384,21 @@ export default async function ProjectDetailPage({
             </CardHeader>
             <CardContent>
               {project.documents.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No documents yet</p>
+                <p className="text-center text-muted-foreground py-8">
+                  No documents yet
+                </p>
               ) : (
                 <div className="space-y-4">
                   {project.documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={doc.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div>
                         <h4 className="font-medium">{doc.title}</h4>
                         <p className="text-sm text-muted-foreground">
-                          {doc.type.replace("_", " ")} • Uploaded by {doc.uploadedBy.firstName}{" "}
-                          {doc.uploadedBy.lastName}
+                          {doc.type.replace('_', ' ')} • Uploaded by{' '}
+                          {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
                         </p>
                       </div>
                       <Button variant="outline" size="sm">
@@ -352,5 +413,5 @@ export default async function ProjectDetailPage({
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

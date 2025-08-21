@@ -1,27 +1,27 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import { ProjectForm } from "@/components/projects/project-form"
-import { getClients } from "@/lib/fetchers/contacts"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import { ProjectForm } from '@/components/projects/project-form';
+import { getClients } from '@/lib/fetchers/contacts';
 
 export default async function EditProjectPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const [project, clientEntities] = await Promise.all([
     prisma.project.findUnique({
       where: { id: params.id },
     }),
     getClients(),
-  ])
-  const clients = clientEntities.map(({ id, name }) => ({ id, name }))
+  ]);
+  const clients = clientEntities.map(({ id, name }) => ({ id, name }));
 
   if (!project) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -33,5 +33,5 @@ export default async function EditProjectPage({
 
       <ProjectForm clients={clients} project={project} />
     </div>
-  )
+  );
 }

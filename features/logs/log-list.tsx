@@ -1,16 +1,10 @@
-import Link from "next/link"
-import { prisma } from "@/lib/db"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { DailyLogCard } from "@/components/logs/daily-log-card"
-import { LogFilters } from "@/features/logs/log-filters"
-import {
-  Plus,
-  Calendar,
-  FileText,
-  Camera,
-  ClipboardList,
-} from "lucide-react"
+import Link from 'next/link';
+import { prisma } from '@/lib/db';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { DailyLogCard } from '@/components/logs/daily-log-card';
+import { LogFilters } from '@/features/logs/log-filters';
+import { Plus, Calendar, FileText, Camera, ClipboardList } from 'lucide-react';
 import {
   startOfWeek,
   endOfWeek,
@@ -18,36 +12,36 @@ import {
   endOfMonth,
   startOfDay,
   endOfDay,
-} from "date-fns"
+} from 'date-fns';
 
 interface LogListProps {
-  searchParams: { q?: string; project?: string; range?: string }
+  searchParams: { q?: string; project?: string; range?: string };
 }
 
 export async function LogList({ searchParams }: LogListProps) {
-  const { q, project, range } = searchParams
-  const where: any = {}
+  const { q, project, range } = searchParams;
+  const where: any = {};
 
-  if (project && project !== "all") {
-    where.projectId = project
+  if (project && project !== 'all') {
+    where.projectId = project;
   }
 
   if (q) {
     where.OR = [
-      { workDone: { contains: q, mode: "insensitive" } },
-      { notes: { contains: q, mode: "insensitive" } },
-      { project: { name: { contains: q, mode: "insensitive" } } },
-    ]
+      { workDone: { contains: q, mode: 'insensitive' } },
+      { notes: { contains: q, mode: 'insensitive' } },
+      { project: { name: { contains: q, mode: 'insensitive' } } },
+    ];
   }
 
-  const today = new Date()
-  if (range && range !== "all-time") {
-    if (range === "today") {
-      where.date = { gte: startOfDay(today), lte: endOfDay(today) }
-    } else if (range === "this-week") {
-      where.date = { gte: startOfWeek(today), lte: endOfWeek(today) }
-    } else if (range === "this-month") {
-      where.date = { gte: startOfMonth(today), lte: endOfMonth(today) }
+  const today = new Date();
+  if (range && range !== 'all-time') {
+    if (range === 'today') {
+      where.date = { gte: startOfDay(today), lte: endOfDay(today) };
+    } else if (range === 'this-week') {
+      where.date = { gte: startOfWeek(today), lte: endOfWeek(today) };
+    } else if (range === 'this-month') {
+      where.date = { gte: startOfMonth(today), lte: endOfMonth(today) };
     }
   }
 
@@ -60,33 +54,35 @@ export async function LogList({ searchParams }: LogListProps) {
         photos: true,
         _count: { select: { photos: true } },
       },
-      orderBy: { date: "desc" },
+      orderBy: { date: 'desc' },
       take: 50,
     }),
     prisma.project.findMany({
-      where: { status: "ACTIVE" },
+      where: { status: 'ACTIVE' },
       select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
     }),
-  ])
+  ]);
 
   const thisWeek = dailyLogs.filter(
     (log) => log.date >= startOfWeek(today) && log.date <= endOfWeek(today)
-  )
+  );
   const thisMonth = dailyLogs.filter(
     (log) => log.date >= startOfMonth(today) && log.date <= endOfMonth(today)
-  )
+  );
   const totalPhotos = dailyLogs.reduce(
     (sum, log) => sum + log._count.photos,
     0
-  )
+  );
 
   return (
     <>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Daily Logs</h1>
-          <p className="text-muted-foreground">Track daily progress and document work</p>
+          <p className="text-muted-foreground">
+            Track daily progress and document work
+          </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/logs/new">
@@ -101,8 +97,8 @@ export async function LogList({ searchParams }: LogListProps) {
           <LogFilters
             projects={projects}
             initialSearch={q}
-            initialProject={project ?? "all"}
-            initialRange={range ?? "all-time"}
+            initialProject={project ?? 'all'}
+            initialRange={range ?? 'all-time'}
           />
         </CardContent>
       </Card>
@@ -160,7 +156,9 @@ export async function LogList({ searchParams }: LogListProps) {
             <div className="text-center">
               <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-semibold mb-2">No daily logs yet</h3>
-              <p className="text-muted-foreground mb-6">Start documenting your daily progress</p>
+              <p className="text-muted-foreground mb-6">
+                Start documenting your daily progress
+              </p>
               <Button asChild>
                 <Link href="/dashboard/logs/new">
                   <Plus className="h-4 w-4 mr-2" />
@@ -178,6 +176,5 @@ export async function LogList({ searchParams }: LogListProps) {
         </div>
       )}
     </>
-  )
+  );
 }
-
