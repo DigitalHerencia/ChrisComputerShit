@@ -29,6 +29,7 @@ model User {
   assignedTasks       Task[]
   uploadedDocs        Document[]
   dailyLogs           DailyLog[]
+  subscriptions       Subscription[]
 
   @@map("users")
 }
@@ -219,6 +220,21 @@ model Entity {
   purchaseOrders PurchaseOrder[]
 
   @@map("entities")
+}
+
+model Subscription {
+  id          String   @id
+  userId      String
+  status      String
+  planId      String?
+  trialEndsAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
 }
 
 // Enums

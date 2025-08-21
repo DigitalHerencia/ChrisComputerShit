@@ -6,6 +6,7 @@ This document explains how to set up the project, run it locally, and contribute
 - Node.js 18 or later
 - PostgreSQL database (Neon recommended)
 - Copy `.env.example` to `.env` and configure `DATABASE_URL`, `DIRECT_URL`, and `SHADOW_DATABASE_URL`.
+- Add `CLERK_WEBHOOK_SECRET` for verifying Clerk webhooks.
 
 Install dependencies:
 ```bash

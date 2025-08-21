@@ -85,6 +85,11 @@ DIRECT_URL="postgresql://user:pass@host.neon.tech:5432/db?sslmode=require"
 SHADOW_DATABASE_URL="postgresql://user:pass@host.neon.tech:5432/db_shadow?sslmode=require"
 ```
 
+- Clerk Webhook
+```
+CLERK_WEBHOOK_SECRET="your_svix_signing_secret"
+```
+
 ---
 
 ## 🗺️ Roadmap (high level)
