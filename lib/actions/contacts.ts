@@ -1,15 +1,8 @@
 'use server'
 
-import { z } from 'zod'
 import { prisma } from '../db'
 import { revalidatePath } from 'next/cache'
-
-export const contactSchema = z.object({
-  type: z.enum(['CLIENT','CONTRACTOR','VENDOR','INSPECTOR','BURRITO_TRUCK','OTHER']),
-  name: z.string().min(1),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-})
+import { contactSchema } from '../validators/contacts'
 
 export async function createContact(_: unknown, formData: FormData) {
   const raw = Object.fromEntries(formData)

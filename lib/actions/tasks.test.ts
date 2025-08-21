@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { taskSchema } from './tasks'
+import { taskSchema } from '../validators/tasks'
 
 describe('taskSchema', () => {
   it('rejects missing title', () => {

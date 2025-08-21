@@ -1,14 +1,8 @@
 'use server'
 
-import { z } from 'zod'
 import { prisma } from '../db'
 import { revalidatePath } from 'next/cache'
-
-export const taskSchema = z.object({
-  projectId: z.string().cuid(),
-  title: z.string().min(1),
-  dueDate: z.string().optional(),
-})
+import { taskSchema } from '../validators/tasks'
 
 export async function createTask(_: unknown, formData: FormData) {
   const raw = Object.fromEntries(formData)

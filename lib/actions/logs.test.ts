@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { logSchema } from './logs'
+import { logSchema } from '../validators/logs'
 
 describe('logSchema', () => {
   it('requires projectId and workDone and date', () => {
