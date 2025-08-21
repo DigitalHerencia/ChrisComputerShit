@@ -9,7 +9,7 @@ import globals from 'globals';
 
 export default tseslint.config(
   {
-    ignores: ['node_modules', '.next']
+    ignores: ['node_modules', '.next'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -17,30 +17,30 @@ export default tseslint.config(
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooks,
-      '@next/next': nextPlugin
+      '@next/next': nextPlugin,
     },
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     settings: {
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
-  rules: {
-  ...reactPlugin.configs.recommended.rules,
-  ...reactHooks.configs.recommended.rules,
-  ...nextPlugin.configs['core-web-vitals'].rules,
-  'react/react-in-jsx-scope': 'off',
-  '@typescript-eslint/no-explicit-any': 'off',
-  '@typescript-eslint/no-unused-vars': 'off',
-  '@typescript-eslint/no-empty-object-type': 'off',
-  'react/no-unescaped-entities': 'off',
-  'react/prop-types': 'off',
-  'react/require-render-return': 'error' // Change this line
-}
+    rules: {
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react/prop-types': 'off',
+      'react/require-render-return': 'error', // Change this line
+    },
   }
 );

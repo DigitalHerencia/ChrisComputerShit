@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const contactSchema = z.object({
   type: z.enum([
@@ -13,5 +13,4 @@ export const contactSchema = z.object({
   name: z.string().min(1),
   phone: z.string().optional(),
   email: z.string().email().optional(),
-})
-
+});

@@ -1,16 +1,34 @@
-import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { TimesheetCard } from '@/components/timesheets/timesheet-card'
-import { PayrollSummary } from '@/components/timesheets/payroll-summary'
-import { getTimeEntries, getActiveProjects, getUsers, TimeEntryFilters } from '@/lib/fetchers/timesheets'
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns'
-import { Plus, Search, Clock, DollarSign, CheckCircle, AlertCircle } from 'lucide-react'
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { TimesheetCard } from '@/components/timesheets/timesheet-card';
+import { PayrollSummary } from '@/components/timesheets/payroll-summary';
+import {
+  getTimeEntries,
+  getActiveProjects,
+  getUsers,
+  TimeEntryFilters,
+} from '@/lib/fetchers/timesheets';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import {
+  Plus,
+  Search,
+  Clock,
+  DollarSign,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 
 interface TimesheetListProps {
-  searchParams: TimeEntryFilters
+  searchParams: TimeEntryFilters;
 }
 
 export async function TimesheetList({ searchParams }: TimesheetListProps) {
@@ -18,20 +36,22 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
     getTimeEntries(searchParams),
     getActiveProjects(),
     getUsers(),
-  ])
+  ]);
 
-  const today = new Date()
+  const today = new Date();
   const thisWeek = timeEntries.filter(
-    (entry) => entry.date >= startOfWeek(today) && entry.date <= endOfWeek(today)
-  )
+    (entry) =>
+      entry.date >= startOfWeek(today) && entry.date <= endOfWeek(today)
+  );
   const thisMonth = timeEntries.filter(
-    (entry) => entry.date >= startOfMonth(today) && entry.date <= endOfMonth(today)
-  )
-  const pendingApproval = timeEntries.filter((entry) => !entry.approved)
+    (entry) =>
+      entry.date >= startOfMonth(today) && entry.date <= endOfMonth(today)
+  );
+  const pendingApproval = timeEntries.filter((entry) => !entry.approved);
   const totalHours = thisWeek.reduce(
     (sum, entry) => sum + entry.hoursWorked + entry.overtime,
     0
-  )
+  );
 
   return (
     <>
@@ -98,7 +118,9 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
               <CheckCircle className="h-5 w-5 text-secondary" />
               <div>
                 <p className="text-2xl font-bold">{thisMonth.length}</p>
-                <p className="text-sm text-muted-foreground">Entries This Month</p>
+                <p className="text-sm text-muted-foreground">
+                  Entries This Month
+                </p>
               </div>
             </div>
           </CardContent>
@@ -109,7 +131,9 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
               <AlertCircle className="h-5 w-5 text-accent" />
               <div>
                 <p className="text-2xl font-bold">{pendingApproval.length}</p>
-                <p className="text-sm text-muted-foreground">Pending Approval</p>
+                <p className="text-sm text-muted-foreground">
+                  Pending Approval
+                </p>
               </div>
             </div>
           </CardContent>
@@ -134,7 +158,9 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
           <CardContent className="pt-12 pb-12">
             <div className="text-center">
               <Clock className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
-              <h3 className="text-lg font-semibold mb-2">No time entries yet</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No time entries yet
+              </h3>
               <p className="text-muted-foreground mb-6">
                 Start tracking hours for your projects
               </p>
@@ -155,5 +181,5 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
         </div>
       )}
     </>
-  )
+  );
 }

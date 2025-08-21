@@ -1,20 +1,22 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 interface TaskCardProps {
   task: {
-    id: string
-    title: string
-    status: string
-    dueDate?: Date | null
-  }
+    id: string;
+    title: string;
+    status: string;
+    dueDate?: Date | null;
+  };
 }
 
 export function TaskCard({ task }: TaskCardProps) {
   return (
     <Link href={`/dashboard/tasks/${task.id}`} className="block">
-      <div className="rounded-md shadow-md bg-black p-6 border border-gray-200">
+      <div className="rounded-md shadow-md bg-card p-6 border border-gray-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-foreground">{task.title}</h3>
+          <h3 className="text-lg font-semibold text-foreground">
+            {task.title}
+          </h3>
           <span className="text-sm text-muted-foreground">
             {task.status.replace('_', ' ')}
           </span>
@@ -26,5 +28,5 @@ export function TaskCard({ task }: TaskCardProps) {
         )}
       </div>
     </Link>
-  )
+  );
 }

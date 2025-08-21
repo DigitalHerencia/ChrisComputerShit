@@ -1,22 +1,22 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { FolderOpen, Plus } from "lucide-react"
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { FolderOpen, Plus } from 'lucide-react';
 
 interface Project {
-  id: string
-  name: string
-  status: string
-  location?: string | null
+  id: string;
+  name: string;
+  status: string;
+  location?: string | null;
   _count: {
-    tasks: number
-    dailyLogs: number
-  }
+    tasks: number;
+    dailyLogs: number;
+  };
 }
 
 interface ProjectOverviewProps {
-  projects: Project[]
+  projects: Project[];
 }
 
 export function ProjectOverview({ projects }: ProjectOverviewProps) {
@@ -53,7 +53,11 @@ export function ProjectOverview({ projects }: ProjectOverviewProps) {
                     <h3 className="font-medium">{project.name}</h3>
                     <Badge variant="secondary">{project.status}</Badge>
                   </div>
-                  {project.location && <p className="text-sm text-muted-foreground mb-2">{project.location}</p>}
+                  {project.location && (
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {project.location}
+                    </p>
+                  )}
                   <div className="flex gap-4 text-sm text-muted-foreground">
                     <span>{project._count.tasks} pending tasks</span>
                     <span>{project._count.dailyLogs} logs</span>
@@ -68,5 +72,5 @@ export function ProjectOverview({ projects }: ProjectOverviewProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-import { Suspense } from 'react'
-import Link from 'next/link'
-import { ContactNew } from '@/features/contacts/contact-new'
-import { Button } from '@/components/ui/button'
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { ContactNew } from '@/features/contacts/contact-new';
+import { Button } from '@/components/ui/button';
 
 export default function Page() {
   return (
@@ -19,5 +19,5 @@ export default function Page() {
         <ContactNew />
       </Suspense>
     </div>
-  )
+  );
 }

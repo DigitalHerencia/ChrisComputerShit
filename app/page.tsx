@@ -1,25 +1,35 @@
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { HardHat, Wrench, Calendar, FileText } from "lucide-react"
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { HardHat, Wrench, Calendar, FileText } from 'lucide-react';
 
 export default function HomePage() {
   return (
     <>
-      <SignedIn>{redirect("/dashboard")}</SignedIn>
+      <SignedIn>{redirect('/dashboard')}</SignedIn>
       <SignedOut>
         <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/10">
           <div className="container mx-auto px-4 py-16">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <HardHat className="h-12 w-12 text-primary" />
-                <h1 className="text-4xl md:text-6xl font-bold text-foreground">Chris Romero's</h1>
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground">
+                  Chris Romero's
+                </h1>
               </div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">Construction Dashboard</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">
+                Construction Dashboard
+              </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Making jobsite management puro cherry pie, tu sabes! Track projects, logs, timesheets, and more - all in
-                one place.
+                Making jobsite management puro cherry pie, tu sabes! Track
+                projects, logs, timesheets, and more - all in one place.
               </p>
               <SignInButton mode="modal">
                 <Button size="lg" className="text-lg px-8 py-6">
@@ -35,7 +45,9 @@ export default function HomePage() {
                   <CardTitle>Daily Logs</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>Track daily progress with photos and weather</CardDescription>
+                  <CardDescription>
+                    Track daily progress with photos and weather
+                  </CardDescription>
                 </CardContent>
               </Card>
 
@@ -45,7 +57,9 @@ export default function HomePage() {
                   <CardTitle>Timesheets</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>Easy payroll tracking for your crew</CardDescription>
+                  <CardDescription>
+                    Easy payroll tracking for your crew
+                  </CardDescription>
                 </CardContent>
               </Card>
 
@@ -55,7 +69,9 @@ export default function HomePage() {
                   <CardTitle>Documents</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>Scan and organize all project docs</CardDescription>
+                  <CardDescription>
+                    Scan and organize all project docs
+                  </CardDescription>
                 </CardContent>
               </Card>
 
@@ -65,7 +81,9 @@ export default function HomePage() {
                   <CardTitle>Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>Manage all your jobs in one dashboard</CardDescription>
+                  <CardDescription>
+                    Manage all your jobs in one dashboard
+                  </CardDescription>
                 </CardContent>
               </Card>
             </div>
@@ -73,5 +91,5 @@ export default function HomePage() {
         </div>
       </SignedOut>
     </>
-  )
+  );
 }

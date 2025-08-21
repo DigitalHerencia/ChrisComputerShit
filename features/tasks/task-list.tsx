@@ -1,16 +1,16 @@
-import Link from 'next/link'
-import { TaskCard } from '@/components/tasks/task-card'
-import { getTasks } from '@/lib/fetchers/tasks'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Plus, ClipboardList } from 'lucide-react'
+import Link from 'next/link';
+import { TaskCard } from '@/components/tasks/task-card';
+import { getTasks } from '@/lib/fetchers/tasks';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, ClipboardList } from 'lucide-react';
 
 interface TaskListProps {
-  projectId?: string
+  projectId?: string;
 }
 
 export async function TaskList({ projectId }: TaskListProps = {}) {
-  const tasks = await getTasks(projectId)
+  const tasks = await getTasks(projectId);
 
   if (tasks.length === 0) {
     return (
@@ -31,7 +31,7 @@ export async function TaskList({ projectId }: TaskListProps = {}) {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -40,5 +40,5 @@ export async function TaskList({ projectId }: TaskListProps = {}) {
         <TaskCard key={task.id} task={task} />
       ))}
     </div>
-  )
+  );
 }

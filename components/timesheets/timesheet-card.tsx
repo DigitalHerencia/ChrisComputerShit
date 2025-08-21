@@ -1,26 +1,34 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar, Clock, User, CheckCircle, AlertCircle, Eye } from "lucide-react"
-import { format } from "date-fns"
+import Link from 'next/link';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Calendar,
+  Clock,
+  User,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+} from 'lucide-react';
+import { format } from 'date-fns';
 
 interface TimesheetCardProps {
   entry: {
-    id: string
-    date: Date
-    hoursWorked: number
-    overtime: number
-    description?: string | null
-    approved: boolean
-    project: { name: string; status: string }
-    user: { firstName: string | null; lastName: string | null }
-  }
+    id: string;
+    date: Date;
+    hoursWorked: number;
+    overtime: number;
+    description?: string | null;
+    approved: boolean;
+    project: { name: string; status: string };
+    user: { firstName: string | null; lastName: string | null };
+  };
 }
 
 export function TimesheetCard({ entry }: TimesheetCardProps) {
-  const userName = `${entry.user.firstName || ""} ${entry.user.lastName || ""}`.trim()
-  const totalHours = entry.hoursWorked + entry.overtime
+  const userName =
+    `${entry.user.firstName || ''} ${entry.user.lastName || ''}`.trim();
+  const totalHours = entry.hoursWorked + entry.overtime;
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -29,7 +37,9 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span className="font-medium">{format(entry.date, "EEEE, MMM d, yyyy")}</span>
+              <span className="font-medium">
+                {format(entry.date, 'EEEE, MMM d, yyyy')}
+              </span>
             </div>
             <Badge variant="outline" className="text-xs">
               {entry.project.name}
@@ -37,12 +47,18 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
           </div>
           <div className="flex items-center gap-2">
             {entry.approved ? (
-              <Badge variant="default" className="bg-green-100 text-green-800 border-green-200">
+              <Badge
+                variant="default"
+                className="bg-green-100 text-green-800 border-green-200"
+              >
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Approved
               </Badge>
             ) : (
-              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+              <Badge
+                variant="outline"
+                className="bg-yellow-100 text-yellow-800 border-yellow-200"
+              >
                 <AlertCircle className="h-3 w-3 mr-1" />
                 Pending
               </Badge>
@@ -64,7 +80,9 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
               <div>
-                <p className="font-semibold text-lg">{totalHours.toFixed(1)} hours</p>
+                <p className="font-semibold text-lg">
+                  {totalHours.toFixed(1)} hours
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {entry.hoursWorked}h regular
                   {entry.overtime > 0 && ` + ${entry.overtime}h OT`}
@@ -86,16 +104,18 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
         {entry.description && (
           <div>
             <h4 className="font-medium mb-1 text-sm">Description</h4>
-            <p className="text-sm text-muted-foreground line-clamp-2">{entry.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {entry.description}
+            </p>
           </div>
         )}
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t text-xs text-muted-foreground">
           <span>Project: {entry.project.name}</span>
-          <span>Logged: {format(entry.date, "h:mm a")}</span>
+          <span>Logged: {format(entry.date, 'h:mm a')}</span>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

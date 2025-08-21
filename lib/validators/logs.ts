@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const logSchema = z.object({
   projectId: z.string().cuid(),
@@ -7,5 +7,4 @@ export const logSchema = z.object({
   crewCount: z.coerce.number().int().optional(),
   workDone: z.string().min(1),
   notes: z.string().optional(),
-})
-
+});

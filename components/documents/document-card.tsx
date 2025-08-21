@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   FileText,
   ImageIcon,
@@ -11,55 +11,55 @@ import {
   Calendar,
   User,
   FolderOpen,
-} from "lucide-react"
-import { format } from "date-fns"
+} from 'lucide-react';
+import { format } from 'date-fns';
 
 interface DocumentCardProps {
   document: {
-    id: string
-    title: string
-    description: string | null
-    type: string
-    fileName: string
-    filePath: string
-    fileSize: number | null
-    mimeType: string | null
-    createdAt: Date
-    project: { name: string } | null
-    uploadedBy: { firstName: string | null; lastName: string | null }
-  }
+    id: string;
+    title: string;
+    description: string | null;
+    type: string;
+    fileName: string;
+    filePath: string;
+    fileSize: number | null;
+    mimeType: string | null;
+    createdAt: Date;
+    project: { name: string } | null;
+    uploadedBy: { firstName: string | null; lastName: string | null };
+  };
 }
 
 export function DocumentCard({ document }: DocumentCardProps) {
   const getFileIcon = (mimeType: string | null, type: string) => {
-    if (mimeType?.startsWith("image/")) {
-      return <ImageIcon className="h-8 w-8" />
+    if (mimeType?.startsWith('image/')) {
+      return <ImageIcon className="h-8 w-8" />;
     }
-    if (type === "PHOTO") {
-      return <FileImage className="h-8 w-8" />
+    if (type === 'PHOTO') {
+      return <FileImage className="h-8 w-8" />;
     }
-    return <FileText className="h-8 w-8" />
-  }
+    return <FileText className="h-8 w-8" />;
+  };
 
   const getTypeColor = (type: string) => {
     const colors = {
-      CONTRACT: "bg-blue-100 text-blue-800 border-blue-200",
-      PERMIT: "bg-green-100 text-green-800 border-green-200",
-      PLAN: "bg-purple-100 text-purple-800 border-purple-200",
-      PHOTO: "bg-orange-100 text-orange-800 border-orange-200",
-      INVOICE: "bg-red-100 text-red-800 border-red-200",
-      REPORT: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      OTHER: "bg-gray-100 text-gray-800 border-gray-200",
-    }
-    return colors[type as keyof typeof colors] || colors.OTHER
-  }
+      CONTRACT: 'bg-blue-100 text-blue-800 border-blue-200',
+      PERMIT: 'bg-green-100 text-green-800 border-green-200',
+      PLAN: 'bg-purple-100 text-purple-800 border-purple-200',
+      PHOTO: 'bg-orange-100 text-orange-800 border-orange-200',
+      INVOICE: 'bg-red-100 text-red-800 border-red-200',
+      REPORT: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      OTHER: 'bg-gray-100 text-gray-800 border-gray-200',
+    };
+    return colors[type as keyof typeof colors] || colors.OTHER;
+  };
 
   const formatFileSize = (bytes: number | null) => {
-    if (!bytes) return "Unknown size"
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i]
-  }
+    if (!bytes) return 'Unknown size';
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
+  };
 
   return (
     <Card className="group hover:shadow-md transition-shadow">
@@ -71,14 +71,16 @@ export function DocumentCard({ document }: DocumentCardProps) {
               {getFileIcon(document.mimeType, document.type)}
             </div>
             <Badge variant="outline" className={getTypeColor(document.type)}>
-              {document.type.replace("_", " ")}
+              {document.type.replace('_', ' ')}
             </Badge>
           </div>
         </div>
 
         {/* Document Info */}
         <div className="space-y-2 mb-4">
-          <h3 className="font-semibold text-lg line-clamp-2">{document.title}</h3>
+          <h3 className="font-semibold text-lg line-clamp-2">
+            {document.title}
+          </h3>
           {document.description && (
             <p className="text-sm text-muted-foreground line-clamp-2">
               {document.description}
@@ -105,7 +107,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
           </div>
           <div className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            <span>{format(document.createdAt, "MMM d, yyyy")}</span>
+            <span>{format(document.createdAt, 'MMM d, yyyy')}</span>
           </div>
           {document.fileSize && (
             <div className="text-xs">{formatFileSize(document.fileSize)}</div>
@@ -128,5 +130,5 @@ export function DocumentCard({ document }: DocumentCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,39 +1,39 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus, Calendar, Clock, FileText, CheckSquare } from "lucide-react"
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, Calendar, Clock, FileText, CheckSquare } from 'lucide-react';
 
 export function QuickActions() {
   const actions = [
     {
-      title: "New Daily Log",
+      title: 'New Daily Log',
       description: "Record today's progress",
-      href: "/dashboard/logs/new",
+      href: '/dashboard/logs/new',
       icon: Calendar,
-      color: "bg-primary/10 text-primary hover:bg-primary/20",
+      color: 'bg-primary/10 text-primary hover:bg-primary/20',
     },
     {
-      title: "Log Hours",
-      description: "Submit timesheet",
-      href: "/dashboard/timesheets/new",
+      title: 'Log Hours',
+      description: 'Submit timesheet',
+      href: '/dashboard/timesheets/new',
       icon: Clock,
-      color: "bg-secondary/10 text-secondary hover:bg-secondary/20",
+      color: 'bg-secondary/10 text-secondary hover:bg-secondary/20',
     },
     {
-      title: "Add Task",
-      description: "Create new task",
-      href: "/dashboard/tasks/new",
+      title: 'Add Task',
+      description: 'Create new task',
+      href: '/dashboard/tasks/new',
       icon: CheckSquare,
-      color: "bg-accent/10 text-accent hover:bg-accent/20",
+      color: 'bg-accent/10 text-accent hover:bg-accent/20',
     },
     {
-      title: "Upload Document",
-      description: "Scan or upload files",
-      href: "/dashboard/documents/new",
+      title: 'Upload Document',
+      description: 'Scan or upload files',
+      href: '/dashboard/documents/new',
       icon: FileText,
-      color: "bg-muted text-muted-foreground hover:bg-muted/80",
+      color: 'bg-muted text-muted-foreground hover:bg-muted/80',
     },
-  ]
+  ];
 
   return (
     <Card>
@@ -64,5 +64,5 @@ export function QuickActions() {
         ))}
       </CardContent>
     </Card>
-  )
+  );
 }

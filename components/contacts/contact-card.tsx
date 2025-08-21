@@ -1,14 +1,14 @@
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ContactCardProps {
   contact: {
-    id: string
-    name: string
-    type: string
-    phone?: string | null
-    email?: string | null
-  }
+    id: string;
+    name: string;
+    type: string;
+    phone?: string | null;
+    email?: string | null;
+  };
 }
 
 export function ContactCard({ contact }: ContactCardProps) {
@@ -31,5 +31,5 @@ export function ContactCard({ contact }: ContactCardProps) {
         )}
       </Card>
     </Link>
-  )
+  );
 }

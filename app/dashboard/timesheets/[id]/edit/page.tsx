@@ -1,33 +1,33 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import { TimesheetForm } from "@/components/timesheets/timesheet-form"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import { TimesheetForm } from '@/components/timesheets/timesheet-form';
 
 export default async function EditTimesheetPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const [timeEntry, projects, users] = await Promise.all([
     prisma.timeEntry.findUnique({
       where: { id: params.id },
     }),
     prisma.project.findMany({
-      where: { status: "ACTIVE" },
+      where: { status: 'ACTIVE' },
       select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
     }),
     prisma.user.findMany({
       select: { id: true, firstName: true, lastName: true, clerkId: true },
-      orderBy: { firstName: "asc" },
+      orderBy: { firstName: 'asc' },
     }),
-  ])
+  ]);
 
   if (!timeEntry) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -39,5 +39,5 @@ export default async function EditTimesheetPage({
 
       <TimesheetForm projects={projects} users={users} entry={timeEntry} />
     </div>
-  )
+  );
 }

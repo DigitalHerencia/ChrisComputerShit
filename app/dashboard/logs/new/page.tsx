@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { LogNew } from '@/features/logs/log-new'
+import { Suspense } from 'react';
+import { LogNew } from '@/features/logs/log-new';
 
 export default function Page() {
   return (
@@ -8,5 +8,5 @@ export default function Page() {
         <LogNew />
       </Suspense>
     </div>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { getContact } from '@/lib/fetchers/contacts'
-import { notFound } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getContact } from '@/lib/fetchers/contacts';
+import { notFound } from 'next/navigation';
 
 interface ContactDetailProps {
-  id: string
+  id: string;
 }
 
 export async function ContactDetail({ id }: ContactDetailProps) {
-  const contact = await getContact(id)
+  const contact = await getContact(id);
   if (!contact) {
-    notFound()
+    notFound();
   }
   return (
     <Card>
@@ -24,5 +24,5 @@ export async function ContactDetail({ id }: ContactDetailProps) {
         {contact.email && <p>Email: {contact.email}</p>}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,19 +1,19 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
-import { DocumentForm } from "@/components/documents/document-form"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { DocumentForm } from '@/components/documents/document-form';
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditDocumentPage({ params }: PageProps) {
-  const { id } = await params
-  const user = await currentUser()
-  if (!user) return null
+  const { id } = await params;
+  const user = await currentUser();
+  if (!user) return null;
 
   const [document, projects] = await Promise.all([
     prisma.document.findUnique({
@@ -28,12 +28,12 @@ export default async function EditDocumentPage({ params }: PageProps) {
     }),
     prisma.project.findMany({
       select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
     }),
-  ])
+  ]);
 
   if (!document) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -54,5 +54,5 @@ export default async function EditDocumentPage({ params }: PageProps) {
       {/* Form */}
       <DocumentForm projects={projects} document={document} />
     </div>
-  )
+  );
 }

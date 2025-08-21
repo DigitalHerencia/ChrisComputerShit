@@ -1,27 +1,28 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar, Users, Camera, Cloud, Eye } from "lucide-react"
-import { format } from "date-fns"
+import Link from 'next/link';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Calendar, Users, Camera, Cloud, Eye } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface DailyLogCardProps {
   log: {
-    id: string
-    date: Date
-    weather?: string | null
-    crewCount?: number | null
-    workDone: string
-    notes?: string | null
-    project: { name: string; status: string }
-    createdBy: { firstName: string | null; lastName: string | null }
-    photos: { id: string; url: string; caption?: string | null }[]
-    _count: { photos: number }
-  }
+    id: string;
+    date: Date;
+    weather?: string | null;
+    crewCount?: number | null;
+    workDone: string;
+    notes?: string | null;
+    project: { name: string; status: string };
+    createdBy: { firstName: string | null; lastName: string | null };
+    photos: { id: string; url: string; caption?: string | null }[];
+    _count: { photos: number };
+  };
 }
 
 export function DailyLogCard({ log }: DailyLogCardProps) {
-  const createdByName = `${log.createdBy.firstName || ""} ${log.createdBy.lastName || ""}`.trim()
+  const createdByName =
+    `${log.createdBy.firstName || ''} ${log.createdBy.lastName || ''}`.trim();
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -30,7 +31,9 @@ export function DailyLogCard({ log }: DailyLogCardProps) {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span className="font-medium">{format(log.date, "EEEE, MMM d, yyyy")}</span>
+              <span className="font-medium">
+                {format(log.date, 'EEEE, MMM d, yyyy')}
+              </span>
             </div>
             <Badge variant="outline" className="text-xs">
               {log.project.name}
@@ -71,14 +74,18 @@ export function DailyLogCard({ log }: DailyLogCardProps) {
         {/* Work Done */}
         <div>
           <h3 className="font-medium mb-2">Work Completed</h3>
-          <p className="text-sm text-muted-foreground line-clamp-3">{log.workDone}</p>
+          <p className="text-sm text-muted-foreground line-clamp-3">
+            {log.workDone}
+          </p>
         </div>
 
         {/* Notes */}
         {log.notes && (
           <div>
             <h4 className="font-medium mb-1 text-sm">Notes</h4>
-            <p className="text-sm text-muted-foreground line-clamp-2">{log.notes}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {log.notes}
+            </p>
           </div>
         )}
 
@@ -90,15 +97,17 @@ export function DailyLogCard({ log }: DailyLogCardProps) {
               {log.photos.slice(0, 4).map((photo) => (
                 <div key={photo.id} className="flex-shrink-0">
                   <img
-                    src={photo.url || "/placeholder.svg"}
-                    alt={photo.caption || "Daily log photo"}
+                    src={photo.url || '/placeholder.svg'}
+                    alt={photo.caption || 'Daily log photo'}
                     className="w-16 h-16 object-cover rounded-md border"
                   />
                 </div>
               ))}
               {log.photos.length > 4 && (
                 <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-md border flex items-center justify-center">
-                  <span className="text-xs text-muted-foreground">+{log.photos.length - 4}</span>
+                  <span className="text-xs text-muted-foreground">
+                    +{log.photos.length - 4}
+                  </span>
                 </div>
               )}
             </div>
@@ -108,9 +117,9 @@ export function DailyLogCard({ log }: DailyLogCardProps) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t text-xs text-muted-foreground">
           <span>Logged by {createdByName}</span>
-          <span>{format(log.date, "h:mm a")}</span>
+          <span>{format(log.date, 'h:mm a')}</span>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

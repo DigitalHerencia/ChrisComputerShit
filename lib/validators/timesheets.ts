@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const timeEntrySchema = z.object({
   id: z.string().cuid().optional(),
@@ -8,4 +8,4 @@ export const timeEntrySchema = z.object({
   hoursWorked: z.coerce.number().min(0),
   overtime: z.coerce.number().min(0).optional(),
   description: z.string().optional(),
-})
+});

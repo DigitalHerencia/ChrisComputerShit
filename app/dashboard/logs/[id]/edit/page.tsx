@@ -1,29 +1,29 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
-import { notFound } from "next/navigation"
-import { DailyLogForm } from "@/components/logs/daily-log-form"
+import { currentUser } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import { DailyLogForm } from '@/components/logs/daily-log-form';
 
 export default async function EditDailyLogPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const user = await currentUser()
-  if (!user) return null
+  const user = await currentUser();
+  if (!user) return null;
 
   const [dailyLog, projects] = await Promise.all([
     prisma.dailyLog.findUnique({
       where: { id: params.id },
     }),
     prisma.project.findMany({
-      where: { status: "ACTIVE" },
+      where: { status: 'ACTIVE' },
       select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
     }),
-  ])
+  ]);
 
   if (!dailyLog) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -35,5 +35,5 @@ export default async function EditDailyLogPage({
 
       <DailyLogForm projects={projects} log={dailyLog} />
     </div>
-  )
+  );
 }

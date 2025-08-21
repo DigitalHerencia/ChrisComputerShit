@@ -1,17 +1,15 @@
-import { prisma } from '@/lib/db'
-import { DashboardStats } from '@/components/dashboard/dashboard-stats'
-import { RecentActivity } from '@/components/dashboard/recent-activity'
-import { ProjectOverview } from '@/components/dashboard/project-overview'
-import { QuickActions } from '@/components/dashboard/quick-actions'
+import { prisma } from '@/lib/db';
+import { DashboardStats } from '@/components/dashboard/dashboard-stats';
+import { RecentActivity } from '@/components/dashboard/recent-activity';
+import { ProjectOverview } from '@/components/dashboard/project-overview';
+import { QuickActions } from '@/components/dashboard/quick-actions';
 
 export default async function DashboardPage() {
-
-
   const startDate = new Date();
-startDate.setHours(0, 0, 0, 0);
+  startDate.setHours(0, 0, 0, 0);
 
-const endDate = new Date();
-endDate.setHours(23, 59, 59, 999);
+  const endDate = new Date();
+  endDate.setHours(23, 59, 59, 999);
 
   const [projects, recentLogs, todayTimeEntries] = await Promise.all([
     prisma.project.findMany({
@@ -37,10 +35,10 @@ endDate.setHours(23, 59, 59, 999);
     }),
     prisma.timeEntry.findMany({
       where: {
-         date: {
-      gte: startDate,
-      lt: endDate,
-    },
+        date: {
+          gte: startDate,
+          lt: endDate,
+        },
       },
       include: {
         user: { select: { firstName: true, lastName: true } },
@@ -49,11 +47,17 @@ endDate.setHours(23, 59, 59, 999);
     }),
   ]);
 
-  const pendingTasks = projects.reduce((sum, project) => sum + project._count.tasks, 0);
+  const pendingTasks = projects.reduce(
+    (sum, project) => sum + project._count.tasks,
+    0
+  );
   const stats = {
     activeProjects: projects.length,
     pendingTasks,
-    todayHours: todayTimeEntries.reduce((sum, entry) => sum + entry.hoursWorked, 0),
+    todayHours: todayTimeEntries.reduce(
+      (sum, entry) => sum + entry.hoursWorked,
+      0
+    ),
     recentLogs: recentLogs.length,
   };
 
@@ -61,7 +65,9 @@ endDate.setHours(23, 59, 59, 999);
     <div className="space-y-6">
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Your construction empire at a glance</p>
+        <p className="text-muted-foreground">
+          Your construction empire at a glance
+        </p>
       </header>
 
       <DashboardStats stats={stats} />

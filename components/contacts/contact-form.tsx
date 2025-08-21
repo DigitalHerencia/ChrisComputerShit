@@ -1,12 +1,18 @@
-'use client'
+'use client';
 
-import { useActionState } from 'react'
-import { useFormStatus } from 'react-dom'
-import { createContact } from '@/lib/actions/contacts'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { createContact } from '@/lib/actions/contacts';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const types = [
   'CLIENT',
@@ -16,10 +22,10 @@ const types = [
   'EMPLOYEE',
   'BURRITO_TRUCK',
   'OTHER',
-] as const
+] as const;
 
 export function ContactForm() {
-  const [state, action] = useActionState(createContact, undefined)
+  const [state, action] = useActionState(createContact, undefined);
   return (
     <Card className="max-w-md">
       <CardHeader>
@@ -51,14 +57,14 @@ export function ContactForm() {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function SubmitButton() {
-  const { pending } = useFormStatus()
+  const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
       {pending ? 'Saving...' : 'Save Contact'}
     </Button>
-  )
+  );
 }

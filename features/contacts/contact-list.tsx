@@ -1,16 +1,16 @@
-import { EntityType } from '@prisma/client'
-import { getContacts } from '@/lib/fetchers/contacts'
-import { ContactCard } from '@/components/contacts/contact-card'
-import { Card, CardContent } from '@/components/ui/card'
-import { Users } from 'lucide-react'
+import { EntityType } from '@prisma/client';
+import { getContacts } from '@/lib/fetchers/contacts';
+import { ContactCard } from '@/components/contacts/contact-card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Users } from 'lucide-react';
 
 interface ContactListProps {
-  search?: string
-  type?: string
+  search?: string;
+  type?: string;
 }
 
 export async function ContactList({ search, type }: ContactListProps) {
-  const contacts = await getContacts({ q: search, type: type as EntityType })
+  const contacts = await getContacts({ q: search, type: type as EntityType });
   if (contacts.length === 0) {
     return (
       <Card>
@@ -24,7 +24,7 @@ export async function ContactList({ search, type }: ContactListProps) {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -32,5 +32,5 @@ export async function ContactList({ search, type }: ContactListProps) {
         <ContactCard key={c.id} contact={c} />
       ))}
     </div>
-  )
+  );
 }
