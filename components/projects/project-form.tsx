@@ -1,10 +1,8 @@
 'use client';
 
-import type React from 'react';
-
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
 import { Loader2, Save, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -33,14 +30,11 @@ interface ProjectFormProps {
     endDate?: Date | null;
     clientId?: string | null;
   };
+  action: (state: unknown, formData: FormData) => Promise<any>;
 }
 
-export function ProjectForm({ clients, project }: ProjectFormProps) {
-  const router = useRouter();
-  const { user } = useUser();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-
+export function ProjectForm({ clients, project, action }: ProjectFormProps) {
+  const [state, formAction] = useActionState(action, undefined);
   const [formData, setFormData] = useState({
     name: project?.name || '',
     description: project?.description || '',
@@ -52,52 +46,8 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
     endDate: project?.endDate
       ? project.endDate.toISOString().split('T')[0]
       : '',
-    clientId: project?.clientId || 'defaultClientId', // Updated default value to be a non-empty string
+    clientId: project?.clientId || 'defaultClientId',
   });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-
-    setIsLoading(true);
-
-    try {
-      const url = project ? `/api/projects/${project.id}` : '/api/projects';
-      const method = project ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          startDate: formData.startDate ? new Date(formData.startDate) : null,
-          endDate: formData.endDate ? new Date(formData.endDate) : null,
-          clientId: formData.clientId || null,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save project');
-      }
-
-      const savedProject = await response.json();
-
-      toast({
-        title: project ? 'Project updated' : 'Project created',
-        description: `${formData.name} has been ${project ? 'updated' : 'created'} successfully.`,
-      });
-
-      router.push(`/dashboard/projects/${savedProject.id}`);
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to save project. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Card>
@@ -114,24 +64,24 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={formAction} className="space-y-6">
+          {project && <input type="hidden" name="id" value={project.id} />}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="name">Project Name *</Label>
               <Input
                 id="name"
+                name="name"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g., Main Street Pipe Installation"
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <Select
+                name="status"
                 value={formData.status}
                 onValueChange={(value) =>
                   setFormData({ ...formData, status: value })
@@ -155,6 +105,7 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
+              name="description"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -168,6 +119,7 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
             <Label htmlFor="location">Location</Label>
             <Input
               id="location"
+              name="location"
               value={formData.location}
               onChange={(e) =>
                 setFormData({ ...formData, location: e.target.value })
@@ -179,6 +131,7 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
           <div className="space-y-2">
             <Label htmlFor="clientId">Client</Label>
             <Select
+              name="clientId"
               value={formData.clientId}
               onValueChange={(value) =>
                 setFormData({ ...formData, clientId: value })
@@ -188,10 +141,7 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
                 <SelectValue placeholder="Select a client (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="defaultClientId">
-                  No client selected
-                </SelectItem>{' '}
-                {/* Updated value to be a non-empty string */}
+                <SelectItem value="defaultClientId">No client selected</SelectItem>
                 {clients.map((client) => (
                   <SelectItem key={client.id} value={client.id}>
                     {client.name}
@@ -206,6 +156,7 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
               <Label htmlFor="startDate">Start Date</Label>
               <Input
                 id="startDate"
+                name="startDate"
                 type="date"
                 value={formData.startDate}
                 onChange={(e) =>
@@ -213,11 +164,11 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
                 }
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="endDate">End Date</Label>
               <Input
                 id="endDate"
+                name="endDate"
                 type="date"
                 value={formData.endDate}
                 onChange={(e) =>
@@ -228,17 +179,27 @@ export function ProjectForm({ clients, project }: ProjectFormProps) {
           </div>
 
           <div className="flex gap-4 pt-6">
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              <Save className="h-4 w-4 mr-2" />
-              {project ? 'Update Project' : 'Create Project'}
-            </Button>
+            <SubmitButton label={project ? 'Update Project' : 'Create Project'} />
             <Button type="button" variant="outline" asChild>
               <Link href="/dashboard/projects">Cancel</Link>
             </Button>
           </div>
+          {state?.error && (
+            <p className="text-sm text-destructive">{state.error}</p>
+          )}
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} className="flex-1">
+      {pending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+      <Save className="h-4 w-4 mr-2" />
+      {label}
+    </Button>
   );
 }

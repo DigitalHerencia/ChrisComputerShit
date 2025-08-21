@@ -1,10 +1,7 @@
-import { prisma } from '@/lib/db';
 import { LogForm } from '@/components/logs/log-form';
+import { getProjects } from '@/lib/fetchers/projects';
 
 export async function LogNew() {
-  const projects = await prisma.project.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' },
-  });
+  const projects = await getProjects();
   return <LogForm projects={projects} />;
 }

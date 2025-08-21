@@ -1,5 +1,4 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +20,9 @@ import {
   Tag,
   FolderOpen,
 } from 'lucide-react';
+import { getDocuments, getDocumentStats } from '@/lib/fetchers/documents';
+import { getProjects } from '@/lib/fetchers/projects';
+import { getUserByClerkId } from '@/lib/fetchers/users';
 
 interface DocumentListProps {
   searchParams: { search?: string; type?: string; project?: string };
@@ -30,46 +32,13 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
   const user = await currentUser();
   if (!user) return null;
 
-  const dbUser = await prisma.user.findUnique({
-    where: { clerkId: user.id },
-  });
-
+  const dbUser = await getUserByClerkId(user.id);
   if (!dbUser) return null;
 
-  const where: any = {};
-
-  if (searchParams.search) {
-    where.OR = [
-      { title: { contains: searchParams.search, mode: 'insensitive' } },
-      { description: { contains: searchParams.search, mode: 'insensitive' } },
-    ];
-  }
-
-  if (searchParams.type && searchParams.type !== 'all') {
-    where.type = searchParams.type;
-  }
-
-  if (searchParams.project && searchParams.project !== 'all') {
-    where.projectId = searchParams.project;
-  }
-
   const [documents, projects, stats] = await Promise.all([
-    prisma.document.findMany({
-      where,
-      include: {
-        project: { select: { name: true } },
-        uploadedBy: { select: { firstName: true, lastName: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.project.findMany({
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    }),
-    prisma.document.groupBy({
-      by: ['type'],
-      _count: { type: true },
-    }),
+    getDocuments(searchParams),
+    getProjects(),
+    getDocumentStats(),
   ]);
 
   const totalDocuments = documents.length;
@@ -228,7 +197,11 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {documents.map((document) => (
+            <DocumentCard key={document.id} document={document} />
+          ))}
+        </div>
       )}
     </div>
   );

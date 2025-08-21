@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { ProjectForm } from '@/components/projects/project-form';
 import { getClients } from '@/lib/fetchers/contacts';
+import { createProject } from '@/lib/actions/projects';
 
 export default async function NewProjectPage() {
   const user = await currentUser();
@@ -17,7 +18,7 @@ export default async function NewProjectPage() {
         </p>
       </div>
 
-      <ProjectForm clients={clients} />
+      <ProjectForm clients={clients} action={createProject} />
     </div>
   );
 }

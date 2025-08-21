@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
+import { getDailyLog } from '@/lib/fetchers/logs';
 import { deleteDailyLog } from '@/lib/actions/logs';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -25,14 +25,7 @@ export async function LogDetail({ id }: LogDetailProps) {
   const user = await currentUser();
   if (!user) return null;
 
-  const dailyLog = await prisma.dailyLog.findUnique({
-    where: { id },
-    include: {
-      project: { select: { name: true, location: true } },
-      createdBy: { select: { firstName: true, lastName: true } },
-      photos: true,
-    },
-  });
+  const dailyLog = await getDailyLog(id);
 
   if (!dailyLog) {
     notFound();

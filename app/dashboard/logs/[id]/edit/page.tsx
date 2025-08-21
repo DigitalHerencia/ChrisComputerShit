@@ -1,7 +1,9 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
 import { notFound } from 'next/navigation';
-import { DailyLogForm } from '@/components/logs/daily-log-form';
+import { LogForm } from '@/components/logs/log-form';
+import { getDailyLog } from '@/lib/fetchers/logs';
+import { getProjects } from '@/lib/fetchers/projects';
+import { updateDailyLog } from '@/lib/actions/logs';
 
 export default async function EditDailyLogPage({
   params,
@@ -12,14 +14,8 @@ export default async function EditDailyLogPage({
   if (!user) return null;
 
   const [dailyLog, projects] = await Promise.all([
-    prisma.dailyLog.findUnique({
-      where: { id: params.id },
-    }),
-    prisma.project.findMany({
-      where: { status: 'ACTIVE' },
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    }),
+    getDailyLog(params.id),
+    getProjects(),
   ]);
 
   if (!dailyLog) {
@@ -33,7 +29,7 @@ export default async function EditDailyLogPage({
         <p className="text-muted-foreground">Update log information</p>
       </div>
 
-      <DailyLogForm projects={projects} log={dailyLog} />
+      <LogForm projects={projects} log={dailyLog} action={updateDailyLog} />
     </div>
   );
 }

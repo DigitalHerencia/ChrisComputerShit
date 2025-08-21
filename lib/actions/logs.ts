@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { join } from 'path';
 import { mkdir, writeFile } from 'fs/promises';
 import { redirect } from 'next/navigation';
+import { z } from "zod";
 import { prisma } from '@/lib/db';
 import { logSchema } from '../validators/logs';
 
@@ -72,4 +73,34 @@ export async function deleteDailyLog(_: unknown, formData: FormData) {
   await prisma.dailyLog.delete({ where: { id } });
   revalidatePath('/dashboard/logs');
   redirect('/dashboard/logs');
+}
+
+export async function updateDailyLog(_: unknown, formData: FormData) {
+  const { userId } = auth();
+  if (!userId) {
+    return { error: 'Unauthorized' };
+  }
+
+  const raw = Object.fromEntries(formData);
+  const parsed = logSchema.extend({ id: z.string() }).safeParse(raw);
+  if (!parsed.success) {
+    return { error: 'Invalid input' };
+  }
+
+  const { id, projectId, date, weather, crewCount, workDone, notes } = parsed.data;
+
+  await prisma.dailyLog.update({
+    where: { id },
+    data: {
+      projectId,
+      date: new Date(date),
+      weather,
+      crewCount,
+      workDone,
+      notes,
+    },
+  });
+
+  revalidatePath('/dashboard/logs');
+  redirect(`/dashboard/logs/${id}`);
 }

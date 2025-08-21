@@ -1,5 +1,4 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -16,6 +15,7 @@ import {
   FileIcon as FileSize,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { getDocument } from '@/lib/fetchers/documents';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -26,13 +26,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const user = await currentUser();
   if (!user) return null;
 
-  const document = await prisma.document.findUnique({
-    where: { id },
-    include: {
-      project: { select: { id: true, name: true } },
-      uploadedBy: { select: { firstName: true, lastName: true } },
-    },
-  });
+  const document = await getDocument(id);
 
   if (!document) {
     notFound();
@@ -203,7 +197,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 <CardTitle>Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm">{}</p>
+                <p className="text-sm">{document.description}</p>
               </CardContent>
             </Card>
         </div>
