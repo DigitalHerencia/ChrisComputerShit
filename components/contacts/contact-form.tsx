@@ -8,7 +8,15 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-const types = ['CLIENT','CONTRACTOR','VENDOR','INSPECTOR','BURRITO_TRUCK','OTHER'] as const
+const types = [
+  'CLIENT',
+  'CONTRACTOR',
+  'VENDOR',
+  'INSPECTOR',
+  'EMPLOYEE',
+  'BURRITO_TRUCK',
+  'OTHER',
+] as const
 
 export function ContactForm() {
   const [state, action] = useActionState(createContact, undefined)

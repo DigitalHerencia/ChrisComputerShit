@@ -20,3 +20,16 @@ export async function getContacts(filters: ContactFilters = {}) {
 export async function getContact(id: string) {
   return prisma.entity.findUnique({ where: { id } })
 }
+
+export async function getContactsByType(type: EntityType) {
+  return getContacts({ type })
+}
+
+export const getClients = () => getContactsByType(EntityType.CLIENT)
+export const getContractors = () =>
+  getContactsByType(EntityType.CONTRACTOR)
+export const getVendors = () => getContactsByType(EntityType.VENDOR)
+export const getInspectors = () => getContactsByType(EntityType.INSPECTOR)
+export const getEmployees = () => getContactsByType(EntityType.EMPLOYEE)
+export const getBurritoTrucks = () =>
+  getContactsByType(EntityType.BURRITO_TRUCK)
