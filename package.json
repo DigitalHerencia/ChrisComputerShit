@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "test": "vitest run",
     "format": "prettier --write .",
-    "db:health": "tsx scripts/db-health.ts"
+    "db:health": "tsx scripts/db-health.ts",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "6.31.3",
