@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface ContactCardProps {
   contact: {
@@ -13,12 +14,22 @@ interface ContactCardProps {
 export function ContactCard({ contact }: ContactCardProps) {
   return (
     <Link href={`/dashboard/contacts/${contact.id}`} className="block">
-      <div className="rounded-md shadow-md bg-black p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-foreground">{contact.name}</h3>
-        <p className="text-sm text-muted-foreground">
-          {contact.type.replace('_', ' ')}
-        </p>
-      </div>
+      <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-semibold">
+            {contact.name}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {contact.type.replace('_', ' ')}
+          </p>
+        </CardHeader>
+        {(contact.phone || contact.email) && (
+          <CardContent className="space-y-1 text-sm text-muted-foreground">
+            {contact.phone && <p>Phone: {contact.phone}</p>}
+            {contact.email && <p>Email: {contact.email}</p>}
+          </CardContent>
+        )}
+      </Card>
     </Link>
   )
 }

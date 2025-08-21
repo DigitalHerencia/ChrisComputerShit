@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getContact } from '@/lib/fetchers/contacts'
 import { notFound } from 'next/navigation'
 
@@ -11,15 +12,17 @@ export async function ContactDetail({ id }: ContactDetailProps) {
     notFound()
   }
   return (
-    <div className="rounded-md shadow-md bg-black p-6 border border-gray-200 space-y-2">
-      <h2 className="text-lg font-semibold text-foreground">{contact.name}</h2>
-      <p className="text-sm text-muted-foreground">Type: {contact.type.replace('_', ' ')}</p>
-      {contact.phone && (
-        <p className="text-sm text-muted-foreground">Phone: {contact.phone}</p>
-      )}
-      {contact.email && (
-        <p className="text-sm text-muted-foreground">Email: {contact.email}</p>
-      )}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{contact.name}</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Type: {contact.type.replace('_', ' ')}
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm text-muted-foreground">
+        {contact.phone && <p>Phone: {contact.phone}</p>}
+        {contact.email && <p>Email: {contact.email}</p>}
+      </CardContent>
+    </Card>
   )
 }
