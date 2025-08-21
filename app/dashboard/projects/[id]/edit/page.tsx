@@ -1,8 +1,9 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import { ProjectForm } from '@/components/projects/project-form';
 import { getClients } from '@/lib/fetchers/contacts';
+import { getProject } from '@/lib/fetchers/projects';
+import { updateProject } from '@/lib/actions/projects';
 
 export default async function EditProjectPage({
   params,
@@ -13,9 +14,7 @@ export default async function EditProjectPage({
   if (!user) return null;
 
   const [project, clientEntities] = await Promise.all([
-    prisma.project.findUnique({
-      where: { id: params.id },
-    }),
+    getProject(params.id),
     getClients(),
   ]);
   const clients = clientEntities.map(({ id, name }) => ({ id, name }));
@@ -31,7 +30,7 @@ export default async function EditProjectPage({
         <p className="text-muted-foreground">Update project information</p>
       </div>
 
-      <ProjectForm clients={clients} project={project} />
+      <ProjectForm clients={clients} project={project} action={updateProject} />
     </div>
   );
 }

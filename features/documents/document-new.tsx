@@ -1,15 +1,13 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/db';
 import { DocumentForm } from '@/components/documents/document-form';
+import { getProjects } from '@/lib/fetchers/projects';
+import { createDocument } from '@/lib/actions/documents';
 
 export async function DocumentNew() {
   const user = await currentUser();
   if (!user) return null;
 
-  const projects = await prisma.project.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' },
-  });
+  const projects = await getProjects();
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -20,7 +18,7 @@ export async function DocumentNew() {
         </p>
       </div>
 
-      <DocumentForm projects={projects} />
+      <DocumentForm projects={projects} action={createDocument} />
     </div>
   );
 }

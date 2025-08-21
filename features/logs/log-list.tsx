@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/db';
+import { getDailyLogs } from '@/lib/fetchers/logs';
+import { getProjects } from '@/lib/fetchers/projects';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DailyLogCard } from '@/components/logs/daily-log-card';
@@ -20,50 +21,12 @@ interface LogListProps {
 
 export async function LogList({ searchParams }: LogListProps) {
   const { q, project, range } = searchParams;
-  const where: any = {};
-
-  if (project && project !== 'all') {
-    where.projectId = project;
-  }
-
-  if (q) {
-    where.OR = [
-      { workDone: { contains: q, mode: 'insensitive' } },
-      { notes: { contains: q, mode: 'insensitive' } },
-      { project: { name: { contains: q, mode: 'insensitive' } } },
-    ];
-  }
-
-  const today = new Date();
-  if (range && range !== 'all-time') {
-    if (range === 'today') {
-      where.date = { gte: startOfDay(today), lte: endOfDay(today) };
-    } else if (range === 'this-week') {
-      where.date = { gte: startOfWeek(today), lte: endOfWeek(today) };
-    } else if (range === 'this-month') {
-      where.date = { gte: startOfMonth(today), lte: endOfMonth(today) };
-    }
-  }
-
   const [dailyLogs, projects] = await Promise.all([
-    prisma.dailyLog.findMany({
-      where,
-      include: {
-        project: { select: { name: true, status: true } },
-        createdBy: { select: { firstName: true, lastName: true } },
-        photos: true,
-        _count: { select: { photos: true } },
-      },
-      orderBy: { date: 'desc' },
-      take: 50,
-    }),
-    prisma.project.findMany({
-      where: { status: 'ACTIVE' },
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    }),
+    getDailyLogs({ q, project, range }),
+    getProjects(),
   ]);
 
+  const today = new Date();
   const thisWeek = dailyLogs.filter(
     (log) => log.date >= startOfWeek(today) && log.date <= endOfWeek(today)
   );

@@ -10,19 +10,30 @@ import { Label } from '@/components/ui/label';
 
 interface LogFormProps {
   projects: { id: string; name: string }[];
+  log?: {
+    id: string;
+    projectId: string;
+    date: Date;
+    weather?: string | null;
+    crewCount?: number | null;
+    workDone: string;
+    notes?: string | null;
+  };
+  action?: (state: unknown, formData: FormData) => Promise<any>;
 }
 
-export function LogForm({ projects }: LogFormProps) {
-  const [state, action] = useActionState(createDailyLog, undefined);
+export function LogForm({ projects, log, action = createDailyLog }: LogFormProps) {
+  const [state, formAction] = useActionState(action, undefined);
   return (
-    <form action={action} className="space-y-4">
+    <form action={formAction} className="space-y-4">
+      {log && <input type="hidden" name="id" value={log.id} />}
       <div className="space-y-2">
         <Label htmlFor="projectId">Project</Label>
         <select
           id="projectId"
           name="projectId"
           className="w-full rounded-md border border-gray-200 bg-card p-2 text-foreground"
-          defaultValue=""
+          defaultValue={log?.projectId || ''}
           required
         >
           <option value="" disabled>
@@ -38,24 +49,49 @@ export function LogForm({ projects }: LogFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="date">Date</Label>
-          <Input id="date" type="date" name="date" required />
+          <Input
+            id="date"
+            type="date"
+            name="date"
+            defaultValue={
+              log ? new Date(log.date).toISOString().split('T')[0] : undefined
+            }
+            required
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="weather">Weather</Label>
-          <Input id="weather" name="weather" placeholder="e.g. Sunny" />
+          <Input
+            id="weather"
+            name="weather"
+            placeholder="e.g. Sunny"
+            defaultValue={log?.weather || ''}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="crewCount">Crew Count</Label>
-          <Input id="crewCount" name="crewCount" type="number" min="0" />
+          <Input
+            id="crewCount"
+            name="crewCount"
+            type="number"
+            min="0"
+            defaultValue={log?.crewCount?.toString() || ''}
+          />
         </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="workDone">Work Performed</Label>
-        <Textarea id="workDone" name="workDone" required rows={4} />
+        <Textarea
+          id="workDone"
+          name="workDone"
+          required
+          rows={4}
+          defaultValue={log?.workDone || ''}
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="notes">Notes</Label>
-        <Textarea id="notes" name="notes" rows={3} />
+        <Textarea id="notes" name="notes" rows={3} defaultValue={log?.notes || ''} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="photos">Photos</Label>
@@ -67,7 +103,7 @@ export function LogForm({ projects }: LogFormProps) {
           multiple
         />
       </div>
-      <SubmitButton />
+      <SubmitButton label={log ? 'Update Log' : 'Save Log'} />
       {state?.error && (
         <p className="text-sm text-destructive">{state.error}</p>
       )}
@@ -75,11 +111,11 @@ export function LogForm({ projects }: LogFormProps) {
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? 'Saving...' : 'Save Log'}
+      {pending ? 'Saving...' : label}
     </Button>
   );
 }

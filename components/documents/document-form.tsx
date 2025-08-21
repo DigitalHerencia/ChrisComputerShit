@@ -1,9 +1,8 @@
 'use client';
 
-import type React from 'react';
-
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +16,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Upload, FileText, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 interface DocumentFormProps {
   projects: { id: string; name: string }[];
@@ -29,68 +27,22 @@ interface DocumentFormProps {
     type: string;
     projectId: string | null;
   };
+  action: (state: unknown, formData: FormData) => Promise<any>;
 }
 
 export function DocumentForm({
   projects,
   defaultProjectId,
   document,
+  action,
 }: DocumentFormProps) {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [state, formAction] = useActionState(action, undefined);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const formData = new FormData(e.currentTarget);
-
-      if (selectedFile) {
-        formData.append('file', selectedFile);
-      }
-
-      const url = document ? `/api/documents/${document.id}` : '/api/documents';
-
-      const method = document ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save document');
-      }
-
-      const result = await response.json();
-
-      toast({
-        title: 'Success',
-        description: document
-          ? 'Document updated successfully'
-          : 'Document uploaded successfully',
-      });
-
-      router.push(`/dashboard/documents/${result.id}`);
-    } catch (error) {
-      console.error('Error saving document:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to save document. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -103,8 +55,8 @@ export function DocumentForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* File Upload */}
+        <form action={formAction} className="space-y-6">
+          {document && <input type="hidden" name="id" value={document.id} />}
           {!document && (
             <div className="space-y-2">
               <Label htmlFor="file">File *</Label>
@@ -129,7 +81,7 @@ export function DocumentForm({
                     className="hidden"
                     onChange={handleFileChange}
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
-                    required={!document}
+                    required
                   />
                 </div>
                 {selectedFile && (
@@ -144,7 +96,6 @@ export function DocumentForm({
             </div>
           )}
 
-          {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
             <Input
@@ -156,7 +107,6 @@ export function DocumentForm({
             />
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -168,7 +118,6 @@ export function DocumentForm({
             />
           </div>
 
-          {/* Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Document Type *</Label>
             <Select
@@ -191,14 +140,11 @@ export function DocumentForm({
             </Select>
           </div>
 
-          {/* Project */}
           <div className="space-y-2">
             <Label htmlFor="projectId">Project</Label>
             <Select
               name="projectId"
-              defaultValue={
-                document?.projectId || defaultProjectId || 'NO_PROJECT'
-              }
+              defaultValue={document?.projectId || defaultProjectId || 'NO_PROJECT'}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select project (optional)" />
@@ -214,22 +160,22 @@ export function DocumentForm({
             </Select>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-4 pt-4">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {document ? 'Update Document' : 'Upload Document'}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-            >
-              Cancel
-            </Button>
-          </div>
+          <SubmitButton label={document ? 'Update Document' : 'Upload Document'} />
+          {state?.error && (
+            <p className="text-sm text-destructive">{state.error}</p>
+          )}
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+      {label}
+    </Button>
   );
 }
