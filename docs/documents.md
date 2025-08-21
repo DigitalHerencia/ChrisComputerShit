@@ -7,16 +7,6 @@ The documents feature lets you upload, view, edit, and filter project files.
 - Fill out the form and select a file. Supported types include PDF, DOC, and common image formats.
 - Uploaded files are stored in `/public/uploads` and can be downloaded directly.
 
-### Document Types
-Available categories help organize files:
-- Contract
-- Permit
-- Plan
-- Photo
-- Invoice
-- Report
-- Other
-
 ## Manage
 - Use the filters to search by title, type, or project.
 - View details or download files from each document card.

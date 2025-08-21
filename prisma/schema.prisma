@@ -146,10 +146,8 @@ model Document {
   id           String       @id @default(cuid())
   projectId    String?
   title        String
-  description  String?
   type         DocumentType
-  fileName     String
-  filePath     String
+  url          String
   fileSize     Int?
   mimeType     String?
   uploadedById String
@@ -275,7 +273,6 @@ enum DocumentType {
   RECEIPT
   PLAN
   PHOTO
-  REPORT
   OTHER
 }
 
