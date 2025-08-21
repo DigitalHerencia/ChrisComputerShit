@@ -4,7 +4,8 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Edit, Calendar, Cloud, Users, Camera, MapPin } from "lucide-react"
+import { ArrowLeft, Edit, Calendar, Cloud, Users, Camera, MapPin, Trash2 } from "lucide-react"
+import { deleteDailyLog } from "@/lib/actions/logs"
 import { format } from "date-fns"
 
 export default async function DailyLogDetailPage({
@@ -45,12 +46,21 @@ export default async function DailyLogDetailPage({
             <p className="text-muted-foreground">{dailyLog.project.name}</p>
           </div>
         </div>
-        <Button asChild>
-          <Link href={`/dashboard/logs/${dailyLog.id}/edit`}>
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Log
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link href={`/dashboard/logs/${dailyLog.id}/edit`}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Log
+            </Link>
+          </Button>
+          <form action={deleteDailyLog}>
+            <input type="hidden" name="id" value={dailyLog.id} />
+            <Button variant="destructive" type="submit">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </Button>
+          </form>
+        </div>
       </div>
 
       {/* Log Details */}

@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { join } from 'path'
 import { mkdir, writeFile } from 'fs/promises'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { prisma } from '../db'
 
@@ -64,5 +65,21 @@ export async function createDailyLog(_: unknown, formData: FormData) {
 
   revalidatePath('/dashboard/logs')
   return { success: true, id: log.id }
+}
+
+export async function deleteDailyLog(_: unknown, formData: FormData) {
+  const { userId } = auth()
+  if (!userId) {
+    return { error: 'Unauthorized' }
+  }
+
+  const id = formData.get('id')
+  if (typeof id !== 'string') {
+    return { error: 'Invalid log' }
+  }
+
+  await prisma.dailyLog.delete({ where: { id } })
+  revalidatePath('/dashboard/logs')
+  redirect('/dashboard/logs')
 }
 
