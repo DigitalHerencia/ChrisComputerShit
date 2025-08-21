@@ -55,6 +55,7 @@ export default async function ContactsPage({ searchParams }: PageProps) {
                 <SelectItem value="CONTRACTOR">Contractors</SelectItem>
                 <SelectItem value="VENDOR">Vendors</SelectItem>
                 <SelectItem value="INSPECTOR">Inspectors</SelectItem>
+                <SelectItem value="EMPLOYEE">Employees</SelectItem>
                 <SelectItem value="BURRITO_TRUCK">Burrito Trucks</SelectItem>
                 <SelectItem value="OTHER">Other</SelectItem>
               </SelectContent>

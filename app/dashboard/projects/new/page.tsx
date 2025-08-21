@@ -1,17 +1,12 @@
 import { currentUser } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/db"
 import { ProjectForm } from "@/components/projects/project-form"
+import { getClients } from "@/lib/fetchers/contacts"
 
 export default async function NewProjectPage() {
   const user = await currentUser()
   if (!user) return null
 
-  // Get clients for the form
-  const clients = await prisma.entity.findMany({
-    where: { type: "CLIENT" },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  })
+  const clients = (await getClients()).map(({ id, name }) => ({ id, name }))
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
