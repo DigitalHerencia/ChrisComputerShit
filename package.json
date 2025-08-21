@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "test": "vitest run",
     "format": "prettier --write .",
-    "bootstrap:github": "tsx scripts/bootstrap-issues.ts"
+    "bootstrap:github": "tsx scripts/bootstrap-issues.ts",
+    "db:health": "tsx scripts/db-health.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "6.31.3",
