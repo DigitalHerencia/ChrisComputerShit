@@ -62,7 +62,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
   };
 
   return (
-    <Card className="group hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
         {/* File Icon and Type */}
         <div className="flex items-start justify-between mb-4">

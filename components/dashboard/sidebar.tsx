@@ -15,8 +15,7 @@ import {
   Users,
   Menu,
   X,
-  HardHat,
-  Truck,
+  LaptopMinimalCheck,
 } from 'lucide-react';
 
 const navigation = [
@@ -62,15 +61,14 @@ export function Sidebar() {
           {/* Logo */}
           <div className="flex items-center gap-3 px-6 py-6 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
-              <HardHat className="h-8 w-8 text-sidebar-primary" />
-              <Truck className="h-6 w-6 text-secondary" />
+              <LaptopMinimalCheck className="h-8 w-8 text-sidebar-primary" />
             </div>
             <div>
               <h1 className="font-bold text-sidebar-foreground text-lg">
                 Chris Romero's
               </h1>
               <p className="text-sm text-sidebar-foreground/70">
-                Construction Dashboard
+                Computer Shit
               </p>
             </div>
           </div>
