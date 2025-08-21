@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { join } from 'path';
 import { mkdir, writeFile } from 'fs/promises';
 import { redirect } from 'next/navigation';
-import { prisma } from '../db';
+import { prisma } from '@/lib/db';
 import { logSchema } from '../validators/logs';
 
 export async function createDailyLog(_: unknown, formData: FormData) {

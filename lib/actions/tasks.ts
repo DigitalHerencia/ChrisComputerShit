@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '../db';
+import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { taskSchema } from '../validators/tasks';
 

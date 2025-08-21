@@ -1,4 +1,4 @@
-import { prisma } from '../db';
+import { prisma } from '@/lib/db';
 
 export async function getTasks(projectId?: string) {
   return prisma.task.findMany({

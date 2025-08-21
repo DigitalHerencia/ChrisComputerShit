@@ -2,7 +2,7 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
-import { prisma } from '../db';
+import { prisma } from '@/lib/db';
 import { timeEntrySchema } from '../validators/timesheets';
 
 export async function createTimesheet(_: unknown, formData: FormData) {

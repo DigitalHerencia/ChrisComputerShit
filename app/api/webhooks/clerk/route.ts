@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         });
         break;
       }
-      case 'subscription.deleted': {
+      case 'subscriptionItem.canceled': {
         const sub: any = evt.data;
         await prisma.subscription.delete({ where: { id: sub.id } });
         break;

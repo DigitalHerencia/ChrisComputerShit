@@ -1,5 +1,5 @@
 import { EntityType } from '@prisma/client';
-import { prisma } from '../db';
+import { prisma } from '@/lib/db';
 
 interface ContactFilters {
   q?: string;
@@ -30,5 +30,4 @@ export const getContractors = () => getContactsByType(EntityType.CONTRACTOR);
 export const getVendors = () => getContactsByType(EntityType.VENDOR);
 export const getInspectors = () => getContactsByType(EntityType.INSPECTOR);
 export const getEmployees = () => getContactsByType(EntityType.EMPLOYEE);
-export const getBurritoTrucks = () =>
-  getContactsByType(EntityType.BURRITO_TRUCK);
+export const getBurritoTrucks = () => getContactsByType(EntityType.BURRITO_TRUCK);
