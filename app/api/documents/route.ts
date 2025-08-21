@@ -1,6 +1,8 @@
 import { currentUser } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/db"
 import { type NextRequest, NextResponse } from "next/server"
+import { mkdir, writeFile } from "fs/promises"
+import path from "path"
 
 export async function GET(request: NextRequest) {
   try {
@@ -73,8 +75,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // In a real app, you would upload the file to a storage service
-    // For now, we'll just store the metadata
+    // Persist file to local storage
+    const uploadDir = path.join(process.cwd(), "public", "uploads")
+    await mkdir(uploadDir, { recursive: true })
+    const fileName = `${Date.now()}-${file.name}`
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+    await writeFile(path.join(uploadDir, fileName), buffer)
+
     const document = await prisma.document.create({
       data: {
         title,
@@ -83,7 +91,7 @@ export async function POST(request: NextRequest) {
         fileName: file.name,
         fileSize: file.size,
         mimeType: file.type,
-        filePath: `/uploads/${Date.now()}-${file.name}`, // Mock path
+        filePath: `/uploads/${fileName}`,
         projectId: projectId || null,
         uploadedById: dbUser.id,
       },
