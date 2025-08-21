@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client"
-import { Pool } from "@neondatabase/serverless"
+import { neonConfig, Pool } from "@neondatabase/serverless"
 import { PrismaNeon } from "@prisma/adapter-neon"
+import ws from "ws"
+
+// Neon requires a WebSocket constructor in Node environments
+neonConfig.webSocketConstructor = ws
 
 const connectionString = process.env.DATABASE_URL
 
