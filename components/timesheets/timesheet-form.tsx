@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useActionState, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,8 +12,10 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Save, ArrowLeft, Clock } from "lucide-react"
+import { Loader2, ArrowLeft, Clock } from "lucide-react"
 import Link from "next/link"
+import { createTimesheet, updateTimesheet } from "@/lib/actions/timesheets"
+import { useFormStatus } from "react-dom"
 
 interface TimesheetFormProps {
   projects: { id: string; name: string }[]
@@ -34,68 +36,42 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
   const router = useRouter()
   const { user } = useUser()
   const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
 
-  // Find current user in the users list
   const currentDbUser = users.find((u) => u.clerkId === user?.id)
 
-  const [formData, setFormData] = useState({
-    projectId: entry?.projectId || defaultProjectId || "",
-    userId: entry?.userId || currentDbUser?.id || "",
-    date: entry?.date ? entry.date.toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-    hoursWorked: entry?.hoursWorked?.toString() || "",
-    overtime: entry?.overtime?.toString() || "0",
-    description: entry?.description || "",
-  })
+  const actionFn = entry ? updateTimesheet : createTimesheet
+  const [state, formAction] = useActionState(actionFn, undefined)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!user) return
+  const [hoursWorked, setHoursWorked] = useState(entry?.hoursWorked?.toString() || "")
+  const [overtime, setOvertime] = useState(entry?.overtime?.toString() || "0")
 
-    setIsLoading(true)
-
-    try {
-      const url = entry ? `/api/timesheets/${entry.id}` : "/api/timesheets"
-      const method = entry ? "PUT" : "POST"
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          date: new Date(formData.date),
-          hoursWorked: Number.parseFloat(formData.hoursWorked),
-          overtime: Number.parseFloat(formData.overtime || "0"),
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to save timesheet")
-      }
-
-      const savedEntry = await response.json()
-
+  useEffect(() => {
+    if (!state) return
+    if (state.error) {
+      toast({ title: "Error", description: state.error, variant: "destructive" })
+    }
+    if (state.success && state.id) {
       toast({
         title: entry ? "Timesheet updated" : "Hours logged",
-        description: `${formData.hoursWorked} hours have been ${entry ? "updated" : "logged"} successfully.`,
+        description: `${hoursWorked} hours have been ${entry ? "updated" : "logged"} successfully.`,
       })
-
-      router.push(`/dashboard/timesheets/${savedEntry.id}`)
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save timesheet. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
+      router.push(`/dashboard/timesheets/${state.id}`)
     }
-  }
+  }, [state, toast, router, entry, hoursWorked])
 
   const totalHours = (
-    Number.parseFloat(formData.hoursWorked || "0") + Number.parseFloat(formData.overtime || "0")
+    Number.parseFloat(hoursWorked || "0") + Number.parseFloat(overtime || "0")
   ).toFixed(1)
 
+  function SubmitButton({ children }: { children: React.ReactNode }) {
+    const { pending } = useFormStatus()
+    return (
+      <Button type="submit" disabled={pending} className="flex-1">
+        {pending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+        {children}
+      </Button>
+    )
+  }
   return (
     <Card>
       <CardHeader>
@@ -109,14 +85,12 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={formAction} className="space-y-6">
+          {entry && <input type="hidden" name="id" value={entry.id} />}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="projectId">Project *</Label>
-              <Select
-                value={formData.projectId}
-                onValueChange={(value) => setFormData({ ...formData, projectId: value })}
-              >
+              <Select name="projectId" defaultValue={entry?.projectId || defaultProjectId || ""}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a project" />
                 </SelectTrigger>
@@ -132,7 +106,7 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
 
             <div className="space-y-2">
               <Label htmlFor="userId">Employee *</Label>
-              <Select value={formData.userId} onValueChange={(value) => setFormData({ ...formData, userId: value })}>
+              <Select name="userId" defaultValue={entry?.userId || currentDbUser?.id || ""}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select employee" />
                 </SelectTrigger>
@@ -151,9 +125,13 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
             <Label htmlFor="date">Date *</Label>
             <Input
               id="date"
+              name="date"
               type="date"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              defaultValue={
+                entry?.date
+                  ? entry.date.toISOString().split("T")[0]
+                  : new Date().toISOString().split("T")[0]
+              }
               required
             />
           </div>
@@ -163,12 +141,13 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
               <Label htmlFor="hoursWorked">Regular Hours *</Label>
               <Input
                 id="hoursWorked"
+                name="hoursWorked"
                 type="number"
                 step="0.25"
                 min="0"
                 max="24"
-                value={formData.hoursWorked}
-                onChange={(e) => setFormData({ ...formData, hoursWorked: e.target.value })}
+                value={hoursWorked}
+                onChange={(e) => setHoursWorked(e.target.value)}
                 placeholder="8.0"
                 required
               />
@@ -178,12 +157,13 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
               <Label htmlFor="overtime">Overtime Hours</Label>
               <Input
                 id="overtime"
+                name="overtime"
                 type="number"
                 step="0.25"
                 min="0"
                 max="12"
-                value={formData.overtime}
-                onChange={(e) => setFormData({ ...formData, overtime: e.target.value })}
+                value={overtime}
+                onChange={(e) => setOvertime(e.target.value)}
                 placeholder="0.0"
               />
             </div>
@@ -201,19 +181,15 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              name="description"
+              defaultValue={entry?.description || ""}
               placeholder="Describe the work performed..."
               rows={3}
             />
           </div>
 
           <div className="flex gap-4 pt-6">
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              <Save className="h-4 w-4 mr-2" />
-              {entry ? "Update Entry" : "Log Hours"}
-            </Button>
+            <SubmitButton>{entry ? "Update Timesheet" : "Log Hours"}</SubmitButton>
             <Button type="button" variant="outline" asChild>
               <Link href="/dashboard/timesheets">Cancel</Link>
             </Button>
@@ -223,3 +199,4 @@ export function TimesheetForm({ projects, users, defaultProjectId, entry }: Time
     </Card>
   )
 }
+

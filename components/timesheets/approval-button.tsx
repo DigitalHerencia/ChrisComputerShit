@@ -1,54 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useActionState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { CheckCircle, Loader2 } from "lucide-react"
+import { approveTimesheet } from "@/lib/actions/timesheets"
+import { useFormStatus } from "react-dom"
 
 interface ApprovalButtonProps {
   entryId: string
 }
 
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+      <CheckCircle className="h-4 w-4 mr-2" />
+      Approve Entry
+    </Button>
+  )
+}
+
 export function ApprovalButton({ entryId }: ApprovalButtonProps) {
   const router = useRouter()
   const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
 
-  const handleApprove = async () => {
-    setIsLoading(true)
+  const [state, formAction] = useActionState(approveTimesheet, undefined)
 
-    try {
-      const response = await fetch(`/api/timesheets/${entryId}/approve`, {
-        method: "POST",
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to approve timesheet")
-      }
-
+  useEffect(() => {
+    if (!state) return
+    if (state.error) {
+      toast({ title: "Error", description: state.error, variant: "destructive" })
+    } else if (state.success) {
       toast({
         title: "Timesheet approved",
         description: "The timesheet entry has been approved successfully.",
       })
-
       router.refresh()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to approve timesheet. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
     }
-  }
+  }, [state, toast, router])
 
   return (
-    <Button onClick={handleApprove} disabled={isLoading}>
-      {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-      <CheckCircle className="h-4 w-4 mr-2" />
-      Approve Entry
-    </Button>
+    <form action={formAction}>
+      <input type="hidden" name="id" value={entryId} />
+      <SubmitButton />
+    </form>
   )
 }
