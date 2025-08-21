@@ -1,17 +1,17 @@
-import type { Config } from 'tailwindcss';
-import tailwindAnimate from 'tailwindcss-animate';
+import type { Config } from 'tailwindcss'
+import animate from 'tailwindcss-animate'
 
 export default {
-  mode: 'jit',
-  purge: ['./src/**/*.{js,ts,jsx,tsx}', './public/index.html'],
+  darkMode: 'class',
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './features/**/*.{ts,tsx}',
+    './hooks/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
+  ],
   theme: {
     extend: {},
   },
-  variants: {},
-  plugins: [tailwindAnimate],
-  content: [
-    './src/**/*.{js,ts,jsx,tsx}',
-    './public/index.html',
-    './src/globals.css',
-  ],
-} as Config;
+  plugins: [animate],
+} satisfies Config
