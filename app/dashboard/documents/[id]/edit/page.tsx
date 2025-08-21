@@ -6,17 +6,18 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { DocumentForm } from "@/components/documents/document-form"
 
-export default async function EditDocumentPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function EditDocumentPage({ params }: PageProps) {
+  const { id } = await params
   const user = await currentUser()
   if (!user) return null
 
   const [document, projects] = await Promise.all([
     prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: {
         id: true,
         title: true,

@@ -2,7 +2,16 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, ImageIcon, FileImage, Download, Eye, Calendar, User, FolderOpen } from "lucide-react"
+import {
+  FileText,
+  ImageIcon,
+  FileImage,
+  Download,
+  Eye,
+  Calendar,
+  User,
+  FolderOpen,
+} from "lucide-react"
 import { format } from "date-fns"
 
 interface DocumentCardProps {
@@ -12,6 +21,7 @@ interface DocumentCardProps {
     description: string | null
     type: string
     fileName: string
+    filePath: string
     fileSize: number | null
     mimeType: string | null
     createdAt: Date
@@ -69,8 +79,14 @@ export function DocumentCard({ document }: DocumentCardProps) {
         {/* Document Info */}
         <div className="space-y-2 mb-4">
           <h3 className="font-semibold text-lg line-clamp-2">{document.title}</h3>
-          {document.description && <p className="text-sm text-muted-foreground line-clamp-2">{document.description}</p>}
-          <p className="text-xs text-muted-foreground font-mono">{document.fileName}</p>
+          {document.description && (
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {document.description}
+            </p>
+          )}
+          <p className="text-xs text-muted-foreground font-mono">
+            {document.fileName}
+          </p>
         </div>
 
         {/* Metadata */}
@@ -91,7 +107,9 @@ export function DocumentCard({ document }: DocumentCardProps) {
             <Calendar className="h-3 w-3" />
             <span>{format(document.createdAt, "MMM d, yyyy")}</span>
           </div>
-          {document.fileSize && <div className="text-xs">{formatFileSize(document.fileSize)}</div>}
+          {document.fileSize && (
+            <div className="text-xs">{formatFileSize(document.fileSize)}</div>
+          )}
         </div>
 
         {/* Actions */}
@@ -102,8 +120,10 @@ export function DocumentCard({ document }: DocumentCardProps) {
               View
             </Link>
           </Button>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4" />
+          <Button variant="outline" size="sm" asChild>
+            <a href={document.filePath} download>
+              <Download className="h-4 w-4" />
+            </a>
           </Button>
         </div>
       </CardContent>

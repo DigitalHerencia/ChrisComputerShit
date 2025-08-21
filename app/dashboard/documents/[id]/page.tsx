@@ -5,19 +5,29 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Edit, Download, FileText, Calendar, User, FolderOpen, FileIcon as FileSize } from "lucide-react"
+import {
+  ArrowLeft,
+  Edit,
+  Download,
+  FileText,
+  Calendar,
+  User,
+  FolderOpen,
+  FileIcon as FileSize,
+} from "lucide-react"
 import { format } from "date-fns"
 
-export default async function DocumentDetailPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function DocumentDetailPage({ params }: PageProps) {
+  const { id } = await params
   const user = await currentUser()
   if (!user) return null
 
   const document = await prisma.document.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       project: { select: { id: true, name: true } },
       uploadedBy: { select: { firstName: true, lastName: true } },
@@ -67,9 +77,11 @@ export default async function DocumentDetailPage({
           <Badge variant="outline" className={getTypeColor(document.type)}>
             {document.type.replace("_", " ")}
           </Badge>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Download
+          <Button variant="outline" size="sm" asChild>
+            <a href={document.filePath} download>
+              <Download className="h-4 w-4 mr-2" />
+              Download
+            </a>
           </Button>
           <Button asChild>
             <Link href={`/dashboard/documents/${document.id}/edit`}>
@@ -96,9 +108,11 @@ export default async function DocumentDetailPage({
                   <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                   <p className="text-lg font-medium mb-2">{document.fileName}</p>
                   <p className="text-sm text-muted-foreground mb-4">Preview not available for this file type</p>
-                  <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download to View
+                  <Button variant="outline" asChild>
+                    <a href={document.filePath} download>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download to View
+                    </a>
                   </Button>
                 </div>
               </div>
