@@ -20,8 +20,7 @@ interface DocumentCardProps {
     title: string;
     description: string | null;
     type: string;
-    fileName: string;
-    filePath: string;
+    url: string;
     fileSize: number | null;
     mimeType: string | null;
     createdAt: Date;
@@ -87,7 +86,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
             </p>
           )}
           <p className="text-xs text-muted-foreground font-mono">
-            {document.fileName}
+            {document.url.split('/').pop()}
           </p>
         </div>
 
@@ -123,7 +122,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <a href={document.filePath} download>
+            <a href={document.url} download>
               <Download className="h-4 w-4" />
             </a>
           </Button>
