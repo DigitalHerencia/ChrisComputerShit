@@ -3,8 +3,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { join } from 'path';
-import { mkdir, writeFile } from 'fs/promises';
+import { put } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { documentSchema } from '../validators/documents';
 
@@ -26,12 +25,18 @@ export async function createDocument(_: unknown, formData: FormData) {
     return { error: 'File required' };
   }
 
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return { error: 'Storage token not configured' };
+  }
+
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const uploadDir = join(process.cwd(), 'public', 'uploads');
-  await mkdir(uploadDir, { recursive: true });
   const filename = `${Date.now()}-${file.name}`;
-  await writeFile(join(uploadDir, filename), buffer);
+  const blob = await put(filename, buffer, {
+    access: 'public',
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+    contentType: file.type,
+  });
 
   const doc = await prisma.document.create({
     data: {
@@ -40,7 +45,7 @@ export async function createDocument(_: unknown, formData: FormData) {
       type,
       projectId: projectId && projectId !== 'NO_PROJECT' ? projectId : null,
       uploadedById: userId,
-      filePath: `/uploads/${filename}`,
+      url: blob.url,
       mimeType: file.type,
       fileSize: file.size,
     },

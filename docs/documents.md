@@ -7,7 +7,7 @@ The documents feature lets you upload, view, edit, and filter project files.
 - Navigate to **Dashboard → Documents → Upload Document**.
 - Fill out the form and select a file. Supported types include PDF, DOC, and
   common image formats.
-- Uploaded files are stored in `/public/uploads` and can be downloaded directly.
+- Uploaded files are stored using [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) and can be downloaded directly from the generated URL. Ensure `BLOB_READ_WRITE_TOKEN` is set in your environment.
 
 ## Manage
 

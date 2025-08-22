@@ -10,6 +10,7 @@ changes.
 - Copy `.env.example` to `.env` and configure `DATABASE_URL`, `DIRECT_URL`, and
   `SHADOW_DATABASE_URL`.
 - Add `CLERK_WEBHOOK_SECRET` for verifying Clerk webhooks.
+- Set `BLOB_READ_WRITE_TOKEN` for Vercel Blob document storage.
 - The Neon driver uses WebSockets in Node. The `ws` package is installed and
   wired up in `lib/db.ts`, but ensure your `DATABASE_URL` points at the pooled
   Neon host (e.g. `*-pooler.neon.tech`) so connections succeed.

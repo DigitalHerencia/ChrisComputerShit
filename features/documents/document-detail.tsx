@@ -76,10 +76,10 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
             {document.type.replace('_', ' ')}
           </Badge>
           <Button asChild>
-            <Link href={`/dashboard/documents/${document.id}/download`}>
+            <a href={document.url} download>
               <Download className="h-4 w-4 mr-2" />
               Download
-            </Link>
+            </a>
           </Button>
           <Button asChild>
             <Link href={`/dashboard/documents/${document.id}/edit`}>
@@ -106,7 +106,7 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
                   {document.mimeType ? (
                     <embed
                       className="w-full h-full"
-                      src={`/api/documents/${document.id}/preview`}
+                      src={document.url}
                       type={document.mimeType}
                     />
                   ) : (
@@ -116,7 +116,7 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
                     Preview not available for this file type
                   </p>
                   <Button variant="outline" asChild>
-                    <a href={`/dashboard/documents/${document.id}/download`}>
+                    <a href={document.url} download>
                       <Download className="h-4 w-4 mr-2" />
                       Download to View
                     </a>
@@ -137,7 +137,7 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
               <div className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-muted-foreground">File Name</p>
+                  <p className="text-sm text-muted-foreground">Title</p>
                   <p className="font-medium">{document.title}</p>
                 </div>
               </div>
