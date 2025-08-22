@@ -81,6 +81,15 @@ npm run dev
 
 ---
 
+## 🧪 Testing
+
+- `npm test` — Vitest unit/integration tests (uses pg-mem + Clerk mocks)
+- `npm run test:e2e` — Playwright E2E tests (requires running app)
+
+CI runs both commands on GitHub Actions and during Vercel builds.
+
+---
+
 ## 🔧 Configuration
 
 Create .env:
@@ -122,6 +131,7 @@ CLERK_WEBHOOK_SECRET="your_svix_signing_secret"
 - npm run build - production build
 - npm run lint - lint sources
 - npm run test - unit/integration tests
+- npm run test:e2e - Playwright end-to-end tests
 - npm run format - format code with Prettier
 - npm run bootstrap:github - generate labels, milestones, project board, and
   backlog issues via GitHub API
