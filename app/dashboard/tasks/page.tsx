@@ -21,17 +21,19 @@ export default function TasksPage() {
           <h1 className="text-3xl font-bold text-foreground">Tasks</h1>
           <p className="text-muted-foreground">Browse all tasks</p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/tasks/new">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Task
-          </Link>
-        </Button>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-2">
           <div className="flex flex-col sm:flex-row gap-4">
+            <div>
+              <Button asChild className='w-full sm:w-auto'>
+                <Link href="/dashboard/tasks/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Task
+                </Link>
+              </Button>
+            </div>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search tasks..." className="pl-10" />

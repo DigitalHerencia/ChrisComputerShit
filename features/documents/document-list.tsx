@@ -1,4 +1,5 @@
 import { currentUser } from '@clerk/nextjs/server';
+import { getDocuments, getProjects, getDocumentTypeCounts, DocumentFilters } from '@/lib/fetchers/documents';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,25 +21,16 @@ import {
   Tag,
   FolderOpen,
 } from 'lucide-react';
-import { getDocuments, getDocumentStats } from '@/lib/fetchers/documents';
-import { getProjects } from '@/lib/fetchers/projects';
-import { getUserByClerkId } from '@/lib/fetchers/users';
 
 interface DocumentListProps {
-  searchParams: { search?: string; type?: string; project?: string };
+  searchParams: DocumentFilters;
 }
 
 export async function DocumentList({ searchParams }: DocumentListProps) {
-  const user = await currentUser();
-  if (!user) return null;
-
-  const dbUser = await getUserByClerkId(user.id);
-  if (!dbUser) return null;
-
   const [documents, projects, stats] = await Promise.all([
     getDocuments(searchParams),
     getProjects(),
-    getDocumentStats(),
+    getDocumentTypeCounts(),
   ]);
 
   const totalDocuments = documents.length;
@@ -57,13 +49,65 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
             Manage project documents and files
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/documents/new">
-            <Plus className="h-4 w-4 mr-2" />
-            Upload Document
-          </Link>
-        </Button>
       </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent>
+          <div className='mb-4'>
+            <Button asChild className='w-full sm:w-auto'>
+              <Link href="/dashboard/documents/new">
+                <Plus className="h-4 w-4 mr-2" />
+                Upload Document
+              </Link>
+            </Button>
+          </div>
+          <form className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  name="search"
+                  placeholder="Search documents..."
+                  defaultValue={searchParams.search}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select name="type" defaultValue={searchParams.type || 'all'}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Document Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="CONTRACT">Contract</SelectItem>
+                <SelectItem value="PERMIT">Permit</SelectItem>
+                <SelectItem value="PLAN">Plan</SelectItem>
+                <SelectItem value="PHOTO">Photo</SelectItem>
+                <SelectItem value="INVOICE">Invoice</SelectItem>
+                <SelectItem value="REPORT">Report</SelectItem>
+                <SelectItem value="OTHER">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select name="project" defaultValue={searchParams.project || 'all'}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Project" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Projects</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button type="submit" variant="outline">
+              Apply Filters
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -115,62 +159,6 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
         </Card>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  name="search"
-                  placeholder="Search documents..."
-                  defaultValue={searchParams.search}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <Select name="type" defaultValue={searchParams.type || 'all'}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Document Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="CONTRACT">Contract</SelectItem>
-                <SelectItem value="PERMIT">Permit</SelectItem>
-                <SelectItem value="PLAN">Plan</SelectItem>
-                <SelectItem value="PHOTO">Photo</SelectItem>
-                <SelectItem value="INVOICE">Invoice</SelectItem>
-                <SelectItem value="REPORT">Report</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select name="project" defaultValue={searchParams.project || 'all'}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Project" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Projects</SelectItem>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button type="submit" variant="outline">
-              Apply Filters
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
       {/* Documents Grid */}
       {documents.length === 0 ? (
         <Card>
@@ -199,7 +187,21 @@ export async function DocumentList({ searchParams }: DocumentListProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((document) => (
-            <DocumentCard key={document.id} document={document} />
+            <DocumentCard key={ document.id } document={ {
+              id: '',
+              title: '',
+              description: null,
+              type: '',
+              url: '',
+              fileSize: null,
+              mimeType: null,
+              project: null,
+              createdAt: new Date(),
+              uploadedBy: {
+                firstName: null,
+                lastName: null
+              }
+            } } />
           ))}
         </div>
       )}

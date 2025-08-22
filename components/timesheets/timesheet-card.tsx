@@ -32,19 +32,18 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
+      <CardHeader>
+        <div className="flex items-baseline justify-between w-full">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold">{entry.project.name}</h2>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <span className="font-medium">
                 {format(entry.date, 'EEEE, MMM d, yyyy')}
               </span>
             </div>
-            <Badge variant="outline" className="text-xs">
-              {entry.project.name}
-            </Badge>
           </div>
+
           <div className="flex items-center gap-2">
             {entry.approved ? (
               <Badge
@@ -63,12 +62,6 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
                 Pending
               </Badge>
             )}
-            <Button asChild variant="outline" size="sm">
-              <Link href={`/dashboard/timesheets/${entry.id}`}>
-                <Eye className="h-4 w-4 mr-2" />
-                View
-              </Link>
-            </Button>
           </div>
         </div>
       </CardHeader>
@@ -110,10 +103,22 @@ export function TimesheetCard({ entry }: TimesheetCardProps) {
           </div>
         )}
 
+        {/* View Details Button */}
+          <Button asChild className='w-full sm:w-auto'>
+            <Link href={`/dashboard/timesheets/${entry.id}`}>
+              <Eye className="h-4 w-4 mr-2" />
+                View
+            </Link>
+          </Button>
+
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t text-xs text-muted-foreground">
-          <span>Project: {entry.project.name}</span>
-          <span>Logged: {format(entry.date, 'h:mm a')}</span>
+          <div>
+            <span>Project: {entry.project.name}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>Logged: {format(entry.date, 'h:mm a')}</span>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -54,18 +54,20 @@ export default async function ProjectsPage() {
             Manage all your construction projects
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/projects/new">
-            <Plus className="h-4 w-4 mr-2" />
-            New Project
-          </Link>
-        </Button>
-      </div>
+        </div>
 
       {/* Filters and Search */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-2">
           <div className="flex flex-col sm:flex-row gap-4">
+            <div>
+              <Button asChild className='w-full sm:w-auto'>
+                <Link href="/dashboard/projects/new">
+                <Plus className="h-4 w-4 mr-2" />
+                New Project
+                </Link>
+              </Button>
+            </div>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search projects..." className="pl-10" />

@@ -1,28 +1,30 @@
 import { prisma } from '@/lib/db';
+import { Prisma, DocumentType } from '@prisma/client';
 
-interface DocumentFilters {
+export interface DocumentFilters {
   search?: string;
-  type?: string;
+  type?: DocumentType | 'all';
   project?: string;
+  user?: string;
 }
 
 export async function getDocuments(filters: DocumentFilters = {}) {
-  const { search, type, project } = filters;
-  const where: any = {};
+  const where: Prisma.DocumentWhereInput = {};
 
-  if (search) {
+  if (filters.type && filters.type !== 'all') {
+  // cast since filters.type can be 'all' or a DocumentType
+  where.type = filters.type as DocumentType;
+  }
+
+  if (filters.project && filters.project !== 'all') {
+    where.projectId = filters.project;
+  }
+
+  if (filters.search) {
     where.OR = [
-      { title: { contains: search, mode: 'insensitive' } },
-      { description: { contains: search, mode: 'insensitive' } },
+  { title: { contains: filters.search, mode: 'insensitive' } },
+  { url: { contains: filters.search, mode: 'insensitive' } },
     ];
-  }
-
-  if (type && type !== 'all') {
-    where.type = type;
-  }
-
-  if (project && project !== 'all') {
-    where.projectId = project;
   }
 
   return prisma.document.findMany({
@@ -32,20 +34,18 @@ export async function getDocuments(filters: DocumentFilters = {}) {
       uploadedBy: { select: { firstName: true, lastName: true } },
     },
     orderBy: { createdAt: 'desc' },
+    take: 50,
   });
 }
 
-export async function getDocument(id: string) {
-  return prisma.document.findUnique({
-    where: { id },
-    include: {
-      project: { select: { id: true, name: true, location: true } },
-      uploadedBy: { select: { firstName: true, lastName: true } },
-    },
+export async function getProjects() {
+  return prisma.project.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
   });
 }
 
-export async function getDocumentStats() {
+export async function getDocumentTypeCounts() {
   return prisma.document.groupBy({
     by: ['type'],
     _count: { type: true },

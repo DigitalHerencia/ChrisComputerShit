@@ -28,16 +28,14 @@ export function DailyLogCard({ log }: DailyLogCardProps) {
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold">{log.project.name}</h2>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <span className="font-medium">
                 {format(log.date, 'EEEE, MMM d, yyyy')}
               </span>
             </div>
-            <Badge variant="outline" className="text-xs">
-              {log.project.name}
-            </Badge>
           </div>
           <Button asChild variant="outline" size="sm">
             <Link href={`/dashboard/logs/${log.id}`}>

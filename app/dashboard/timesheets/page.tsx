@@ -1,7 +1,4 @@
 import { Suspense } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { DollarSign, Plus } from 'lucide-react';
 import { TimesheetList } from '@/features/timesheets/timesheet-list';
 
 interface PageProps {
@@ -23,20 +20,6 @@ export default async function TimesheetsPage({ searchParams }: PageProps) {
           <p className="text-muted-foreground">
             Track hours and manage payroll
           </p>
-        </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link href="/dashboard/timesheets/payroll">
-              <DollarSign className="h-4 w-4 mr-2" />
-              Payroll Report
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link href="/dashboard/timesheets/new">
-              <Plus className="h-4 w-4 mr-2" />
-              Log Hours
-            </Link>
-          </Button>
         </div>
       </div>
       <Suspense fallback={<div>Loading timesheets...</div>}>

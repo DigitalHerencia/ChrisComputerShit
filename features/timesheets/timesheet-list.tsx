@@ -56,7 +56,21 @@ export async function TimesheetList({ searchParams }: TimesheetListProps) {
   return (
     <>
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-2">
+          <div className="flex flex-col gap-2 mb-4">
+          <Button asChild className='w-full sm:w-auto'>
+            <Link href="/dashboard/timesheets/payroll">
+              <DollarSign className="h-4 w-4 mr-2" />
+              Payroll Report
+            </Link>
+          </Button>
+          <Button asChild className='w-full sm:w-auto'>
+            <Link href="/dashboard/timesheets/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Log Hours
+            </Link>
+          </Button>
+        </div>
           <form className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />

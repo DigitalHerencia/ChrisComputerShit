@@ -1,15 +1,22 @@
 import { Suspense } from 'react';
 import { DocumentList } from '@/features/documents/document-list';
 import DocumentsLoading from '@/app/dashboard/documents/loading';
+
 interface PageProps {
-  searchParams: Promise<{ search?: string; type?: string; project?: string }>;
+  searchParams: Promise<{
+    search?: string;
+    project?: string;
+    user?: string;
+  }>;
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  const params = await searchParams;
-  return (
-    <Suspense fallback={<DocumentsLoading />}>
-      <DocumentList searchParams={params} />
-    </Suspense>
+export default async function DocumentsPage({ searchParams }: PageProps) {
+  const sp = await searchParams;
+return (
+    <div className="space-y-6">
+      <Suspense fallback={<DocumentsLoading />}>
+        <DocumentList searchParams={sp} />
+      </Suspense>
+    </div>
   );
 }

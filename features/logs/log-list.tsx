@@ -47,22 +47,26 @@ export async function LogList({ searchParams }: LogListProps) {
             Track daily progress and document work
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/logs/new">
-            <Plus className="h-4 w-4 mr-2" />
-            New Log Entry
-          </Link>
-        </Button>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-2">
+          <div>
+            <Button asChild className='w-full sm:w-auto mb-4'>
+              <Link href="/dashboard/logs/new">
+                <Plus className="h-4 w-4 mr-2" />
+                New Log Entry
+              </Link>
+            </Button>
+          </div>
+          <div>
           <LogFilters
             projects={projects}
             initialSearch={q}
             initialProject={project ?? 'all'}
             initialRange={range ?? 'all-time'}
           />
+          </div>
         </CardContent>
       </Card>
 
