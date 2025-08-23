@@ -18,7 +18,7 @@ interface DocumentCardProps {
   document: {
     id: string;
     title: string;
-    description: string | null;
+    description?: string | null;
     type: string;
     url: string;
     fileSize: number | null;

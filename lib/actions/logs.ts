@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { join } from 'path';
 import { mkdir, writeFile } from 'fs/promises';
@@ -10,8 +10,8 @@ import { prisma } from '@/lib/db';
 import { logSchema } from '../validators/logs';
 
 export async function createDailyLog(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -31,7 +31,7 @@ export async function createDailyLog(_: unknown, formData: FormData) {
       crewCount,
       workDone,
       notes,
-      createdById: userId,
+      createdById: user.id,
     },
   });
 
@@ -60,8 +60,8 @@ export async function createDailyLog(_: unknown, formData: FormData) {
 }
 
 export async function deleteDailyLog(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -76,8 +76,8 @@ export async function deleteDailyLog(_: unknown, formData: FormData) {
 }
 
 export async function updateDailyLog(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 

@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { ContactDetail } from '@/features/contacts/contact-detail';
+import { ContactEdit } from '@/features/contacts/contact-edit';
 import { Button } from '@/components/ui/button';
 
 interface PageProps {
@@ -13,17 +13,15 @@ export default async function Page({ params }: PageProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Contact Details
-          </h1>
-          <p className="text-muted-foreground">View contact information</p>
+          <h1 className="text-3xl font-bold text-foreground">Edit Contact</h1>
+          <p className="text-muted-foreground">Update contact information</p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/contacts">Back</Link>
+          <Link href={`/dashboard/contacts/${id}`}>Cancel</Link>
         </Button>
       </div>
-      <Suspense fallback={<div>Loading contact...</div>}>
-        <ContactDetail id={id} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ContactEdit id={id} />
       </Suspense>
     </div>
   );

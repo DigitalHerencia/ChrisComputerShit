@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { TimesheetList } from '@/features/timesheets/timesheet-list';
+import TimesheetsLoading from './loading';
 
 interface PageProps {
   searchParams: Promise<{
@@ -22,7 +23,7 @@ export default async function TimesheetsPage({ searchParams }: PageProps) {
           </p>
         </div>
       </div>
-      <Suspense fallback={<div>Loading timesheets...</div>}>
+      <Suspense fallback={<TimesheetsLoading />}>
         <TimesheetList searchParams={sp} />
       </Suspense>
     </div>

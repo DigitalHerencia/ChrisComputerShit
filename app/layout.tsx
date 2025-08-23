@@ -18,11 +18,13 @@ export const metadata: Metadata = {
   generator: 'v0.app',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  
   return (
     <ClerkProvider>
       <html lang="en">

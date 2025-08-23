@@ -1,15 +1,16 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { put } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { documentSchema } from '../validators/documents';
+import type { DocumentType } from '@prisma/client';
 
 export async function createDocument(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -19,7 +20,7 @@ export async function createDocument(_: unknown, formData: FormData) {
     return { error: 'Invalid input' };
   }
 
-  const { title, description, type, projectId } = parsed.data;
+  const { title, description, type: docType, projectId } = parsed.data;
   const file = formData.get('file') as File | null;
   if (!file || !file.name) {
     return { error: 'File required' };
@@ -41,13 +42,12 @@ export async function createDocument(_: unknown, formData: FormData) {
   const doc = await prisma.document.create({
     data: {
       title,
-      description,
-      type,
+      type: docType as DocumentType,
       projectId: projectId && projectId !== 'NO_PROJECT' ? projectId : null,
-      uploadedById: userId,
       url: blob.url,
       mimeType: file.type,
       fileSize: file.size,
+      uploadedById: user.id,
     },
   });
 
@@ -56,8 +56,8 @@ export async function createDocument(_: unknown, formData: FormData) {
 }
 
 export async function updateDocument(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -67,14 +67,13 @@ export async function updateDocument(_: unknown, formData: FormData) {
     return { error: 'Invalid input' };
   }
 
-  const { id, title, description, type, projectId } = parsed.data;
+  const { id, title, description, type: docType, projectId } = parsed.data;
 
   await prisma.document.update({
     where: { id },
     data: {
       title,
-      description,
-      type,
+      type: docType as DocumentType,
       projectId: projectId && projectId !== 'NO_PROJECT' ? projectId : null,
     },
   });

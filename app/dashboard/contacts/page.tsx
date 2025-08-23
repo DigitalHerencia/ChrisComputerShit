@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, Plus } from 'lucide-react';
+import ContactsLoading from './loading';
 
 interface PageProps {
   searchParams: Promise<{ q?: string; type?: string }>;
@@ -26,15 +27,17 @@ export default async function ContactsPage({ searchParams }: PageProps) {
           <h1 className="text-3xl font-bold text-foreground">Contacts</h1>
           <p className="text-muted-foreground">Browse all contacts</p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/contacts/new">
-            <Plus className="h-4 w-4 mr-2" /> Add Contact
-          </Link>
-        </Button>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-2">
+          <div>
+          <Button asChild className='w-full sm:w-auto mb-4'>
+            <Link href="/dashboard/contacts/new">
+              <Plus className="h-4 w-4 mr-2" /> Add Contact
+            </Link>
+          </Button>
+          </div>
           <form className="flex flex-col sm:flex-row gap-4" method="get">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -67,7 +70,7 @@ export default async function ContactsPage({ searchParams }: PageProps) {
         </CardContent>
       </Card>
 
-      <Suspense fallback={<div>Loading contacts...</div>}>
+      <Suspense fallback={<ContactsLoading />}>
         <ContactList search={q} type={type === 'all' ? undefined : type} />
       </Suspense>
     </div>

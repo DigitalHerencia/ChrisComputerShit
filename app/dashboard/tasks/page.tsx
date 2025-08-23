@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Search } from 'lucide-react';
+import { T } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js';
+import TasksLoading from './loading';
 
 export default function TasksPage() {
   return (
@@ -52,7 +54,7 @@ export default function TasksPage() {
           </div>
         </CardContent>
       </Card>
-      <Suspense fallback={<div>Loading tasks...</div>}>
+      <Suspense fallback={<TasksLoading />}>
         <TaskList />
       </Suspense>
     </div>

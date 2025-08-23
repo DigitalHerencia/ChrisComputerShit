@@ -18,7 +18,7 @@ export async function DocumentNew() {
         </p>
       </div>
 
-      <DocumentForm projects={projects} action={createDocument} />
+  <DocumentForm projects={projects} />
     </div>
   );
 }

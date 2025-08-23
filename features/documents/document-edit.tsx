@@ -43,8 +43,13 @@ export async function DocumentEdit({ id }: DocumentEditProps) {
       {/* Form */}
       <DocumentForm
         projects={projects}
-        document={document}
-        action={updateDocument}
+        document={{
+          id: document.id,
+          title: document.title,
+          description: typeof (document as any).description === 'string' ? (document as any).description : null,
+          type: document.type,
+          projectId: document.projectId ?? null,
+        }}
       />
     </div>
   );

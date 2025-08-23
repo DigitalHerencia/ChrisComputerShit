@@ -160,7 +160,7 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
                   <div>
                     <p className="text-sm text-muted-foreground">Project</p>
                     <Link
-                      href={`/dashboard/projects/${document.project.id}`}
+                      href={`/dashboard/projects/${document.id}`}
                       className="font-medium text-primary hover:underline"
                     >
                       {document.project.name}
@@ -189,15 +189,6 @@ export async function DocumentDetail({ id }: DocumentDetailProps) {
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm">{document.description}</p>
             </CardContent>
           </Card>
         </div>

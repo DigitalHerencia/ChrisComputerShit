@@ -29,7 +29,7 @@ export default async function EditDailyLogPage({
         <p className="text-muted-foreground">Update log information</p>
       </div>
 
-      <LogForm projects={projects} log={dailyLog} action={updateDailyLog} />
+  <LogForm projects={projects} log={dailyLog} />
     </div>
   );
 }

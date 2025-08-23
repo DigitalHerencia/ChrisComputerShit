@@ -11,7 +11,7 @@ export default function Page() {
           <h1 className="text-3xl font-bold text-foreground">New Contact</h1>
           <p className="text-muted-foreground">Add a new contact</p>
         </div>
-        <Button asChild variant="outline">
+        <Button asChild>
           <Link href="/dashboard/contacts">Cancel</Link>
         </Button>
       </div>

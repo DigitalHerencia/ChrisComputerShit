@@ -1,13 +1,13 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { timeEntrySchema } from '../validators/timesheets';
 
 export async function createTimesheet(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -47,8 +47,8 @@ export async function createTimesheet(_: unknown, formData: FormData) {
 }
 
 export async function updateTimesheet(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -90,8 +90,8 @@ export async function updateTimesheet(_: unknown, formData: FormData) {
 }
 
 export async function approveTimesheet(_: unknown, formData: FormData) {
-  const { userId } = auth();
-  if (!userId) {
+  const user = await currentUser();
+    if (!user) {
     return { error: 'Unauthorized' };
   }
 
@@ -100,7 +100,7 @@ export async function approveTimesheet(_: unknown, formData: FormData) {
     return { error: 'Invalid entry' };
   }
 
-  const dbUser = await prisma.user.findUnique({ where: { clerkId: userId } });
+  const dbUser = await prisma.user.findUnique({ where: { clerkId: user.id } });
   if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPERVISOR')) {
     return { error: 'Insufficient permissions' };
   }

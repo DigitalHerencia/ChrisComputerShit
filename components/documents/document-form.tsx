@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createDocument, updateDocument } from '@/lib/actions/documents';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,16 +28,15 @@ interface DocumentFormProps {
     type: string;
     projectId: string | null;
   };
-  action: (state: unknown, formData: FormData) => Promise<any>;
 }
 
 export function DocumentForm({
   projects,
   defaultProjectId,
   document,
-  action,
 }: DocumentFormProps) {
-  const [state, formAction] = useActionState(action, undefined);
+  const actionFn = document ? updateDocument : createDocument;
+  const [state, formAction] = useActionState(actionFn, undefined);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

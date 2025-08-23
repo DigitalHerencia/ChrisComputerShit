@@ -59,13 +59,6 @@ export async function LogDetail({ id }: LogDetailProps) {
               Edit Log
             </Link>
           </Button>
-          <form action={deleteDailyLog}>
-            <input type="hidden" name="id" value={dailyLog.id} />
-            <Button variant="destructive" type="submit">
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </Button>
-          </form>
         </div>
       </div>
 

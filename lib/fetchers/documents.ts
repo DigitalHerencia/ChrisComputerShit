@@ -38,6 +38,16 @@ export async function getDocuments(filters: DocumentFilters = {}) {
   });
 }
 
+export async function getDocument(id: string) {
+  return prisma.document.findUnique({
+    where: { id },
+    include: {
+      project: { select: { name: true } },
+      uploadedBy: { select: { firstName: true, lastName: true } },
+    },
+  });
+}
+
 export async function getProjects() {
   return prisma.project.findMany({
     select: { id: true, name: true },

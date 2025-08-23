@@ -7,12 +7,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { HardHat, Wrench, Calendar, FileText } from 'lucide-react';
-import { SignedOut, SignInButton } from '@clerk/nextjs';
+import { SignInButton } from '@clerk/nextjs';
 
 export default function HomePage() {
   return (
-      <>
-      <SignedOut>
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/10">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center mb-12">
@@ -29,7 +27,7 @@ export default function HomePage() {
               Making jobsite management puro cherry pie, tu sabes! Track
               projects, logs, timesheets, and more - all in one place.
             </p>
-            <SignInButton mode="redirect">
+            <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
               <Button className='w-full sm:w-auto mb-6'>
                 Sign in
               </Button>
@@ -87,6 +85,5 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </SignedOut></>
   );
 }

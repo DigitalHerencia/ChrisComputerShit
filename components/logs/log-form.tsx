@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { createDailyLog } from '@/lib/actions/logs';
+import { createDailyLog, updateDailyLog } from '@/lib/actions/logs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -19,11 +19,11 @@ interface LogFormProps {
     workDone: string;
     notes?: string | null;
   };
-  action?: (state: unknown, formData: FormData) => Promise<any>;
 }
 
-export function LogForm({ projects, log, action = createDailyLog }: LogFormProps) {
-  const [state, formAction] = useActionState(action, undefined);
+export function LogForm({ projects, log }: LogFormProps) {
+  const actionFn = log ? updateDailyLog : createDailyLog;
+  const [state, formAction] = useActionState(actionFn as any, undefined);
   return (
     <form action={formAction} className="space-y-4">
       {log && <input type="hidden" name="id" value={log.id} />}
@@ -104,9 +104,6 @@ export function LogForm({ projects, log, action = createDailyLog }: LogFormProps
         />
       </div>
       <SubmitButton label={log ? 'Update Log' : 'Save Log'} />
-      {state?.error && (
-        <p className="text-sm text-destructive">{state.error}</p>
-      )}
     </form>
   );
 }

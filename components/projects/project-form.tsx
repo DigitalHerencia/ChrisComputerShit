@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { createProject, updateProject } from '@/lib/actions/projects';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,11 +31,11 @@ interface ProjectFormProps {
     endDate?: Date | null;
     clientId?: string | null;
   };
-  action: (state: unknown, formData: FormData) => Promise<any>;
 }
 
-export function ProjectForm({ clients, project, action }: ProjectFormProps) {
-  const [state, formAction] = useActionState(action, undefined);
+export function ProjectForm({ clients, project }: ProjectFormProps) {
+  const actionFn = project ? updateProject : createProject;
+  const [state, formAction] = useActionState(actionFn, undefined);
   const [formData, setFormData] = useState({
     name: project?.name || '',
     description: project?.description || '',

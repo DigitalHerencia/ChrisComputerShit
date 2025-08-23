@@ -19,10 +19,10 @@ export async function createProject(_: unknown, formData: FormData) {
       name,
       description,
       location,
-      status,
       startDate: startDate ? new Date(startDate) : null,
       endDate: endDate ? new Date(endDate) : null,
       clientId: clientId && clientId !== 'defaultClientId' ? clientId : null,
+      createdById: 'clerkUserId',
     },
   });
   revalidatePath('/dashboard/projects');
@@ -43,7 +43,6 @@ export async function updateProject(_: unknown, formData: FormData) {
       name,
       description,
       location,
-      status,
       startDate: startDate ? new Date(startDate) : null,
       endDate: endDate ? new Date(endDate) : null,
       clientId: clientId && clientId !== 'defaultClientId' ? clientId : null,
